@@ -7,7 +7,6 @@ import chisel3.experimental.withClock
  * SPI SLAVE INTERFACE
  */
 class SpiSlave extends Bundle {
-    val CLK = Input(Clock())  // Clcok
     val CS = Input(Bool())    // Chip Select
     val DI = Input(Bool())    // Data Input
     val DO = Output(Bool())   // Data Output
@@ -24,6 +23,8 @@ class SpiReceiver extends Module {
         val ReadSuccess = Output(Bool())
         val Command = Output(UInt(6.W))
         val CommandArgument = Output(UInt(32.W))
+        val ___counter = Output(UInt(8.W))
+        val ___state = Output(UInt(3.W))
     })
     io.DI := io.SPI.DI
     io.SPI.DO := io.DO
@@ -45,6 +46,9 @@ class SpiReceiver extends Module {
     io.ArgumentReadFinished := state > state_argument
     io.ReadSuccess := readSuccess
 
+    io.___state := state
+    io.___counter := counter
+
     for(i <- 0 until 6)
         commandVec(i) := commandBuffer(i)
 
@@ -52,54 +56,52 @@ class SpiReceiver extends Module {
         commandArgumentVec(i) := commandArgumentBuffer(i)
 
     io.Command := commandVec.asUInt
-    io.CommandArgument := commandVec.asUInt
+    io.CommandArgument := commandArgumentVec.asUInt
 
-    withClock (io.SPI.CLK) {
-        switch(state) {
-            is(state_first) {   // first bit "0"
-                when(io.SPI.DI === false.B) {
-                    state := RegNext(state_second)
-                    readSuccess := RegNext(false.B)
-                } 
-                counter := RegNext(0.U)
+    switch(state) {
+        is(state_first) {   // first bit "0"
+            when(io.SPI.DI === false.B) {
+                state := state_second
+                readSuccess := false.B
+            } 
+            counter := 0.U
+        }
+        is(state_second){    // second bit "1"
+            state := Mux(io.SPI.DI, state_command, state_first)
+            counter := 0.U
+        }
+        is(state_command) {   // command
+            commandBuffer.write(counter, io.SPI.DI)
+            when(counter === 5.U) {
+                state := state_argument
+                counter := 0.U
+            }.otherwise{
+                counter := counter + 1.U
             }
-            is(state_second){    // second bit "1"
-                state := RegNext(Mux(io.SPI.DI, state_command, state_first))
-                counter := RegNext(0.U)
+        }
+        is(state_argument) {   // argument
+            commandArgumentBuffer.write(counter, io.SPI.DI)
+            when(counter === 31.U) {
+                state := state_crc
+                counter := 0.U
+            }.otherwise{
+                counter := counter + 1.U
             }
-            is(state_command) {   // command
-                commandBuffer.write(counter, io.SPI.DI)
-                when(counter === 5.U) {
-                    state := RegNext(state_argument)
-                    counter := RegNext(0.U)
-                }.otherwise{
-                    counter := RegNext(counter + 1.U)
-                }
+        }
+        is(state_crc) {   // CRC
+            crcBuffer.write(counter, io.SPI.DI)
+            when(counter === 6.U) {
+                state := state_centinel
+                counter := 0.U
+            }.otherwise{
+                counter := counter + 1.U
             }
-            is(state_argument) {   // argument
-                commandArgumentBuffer.write(counter, io.SPI.DI)
-                when(counter === 31.U) {
-                    state := RegNext(state_crc)
-                    counter := RegNext(0.U)
-                }.otherwise{
-                    counter := RegNext(counter + 1.U)
-                }
+        }
+        is(state_centinel) { // Last bit
+            when(io.SPI.DI === true.B){
+                readSuccess := true.B
             }
-            is(state_crc) {   // CRC
-                crcBuffer.write(counter, io.SPI.DI)
-                when(counter === 6.U) {
-                    state := RegNext(state_centinel)
-                    counter := RegNext(0.U)
-                }.otherwise{
-                    counter := RegNext(counter + 1.U)
-                }
-            }
-            is(state_centinel) { // Last bit
-                when(io.SPI.DI === true.B){
-                    readSuccess := RegNext(true.B)
-                }
-                state := RegNext(state_first)
-            }
+            state := state_first
         }
     }
 }

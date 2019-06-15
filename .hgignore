@@ -1,13 +1,8 @@
 syntax: glob
+subinclude:verilog-out/.hgignore
 
 # ensime
 .ensime_cache
-
-# verilog-out without verilog files
-syntax: regexp
-verilog-out/.+\.[^v]
-
-syntax: glob
 
 ### Project Specific stuff
 test_run_dir/*
