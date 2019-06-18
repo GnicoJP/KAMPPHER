@@ -31,13 +31,13 @@ class SpiReceiverLedDebugger extends Module {
     io.ACMD41 := acmd41
     io.CMD16 := cmd16
 
-    when(ReadSuccess === true.B) {
+    when(io.ReadSuccess === true.B) {
         when(after_apcommand) {
-            when(Command === 41.U) {
+            when(io.Command === 41.U) {
                 acmd41 := true.B
             }
         }.otherwise {
-            switch(Command) {
+            switch(io.Command) {
                 is(0.U){
                     cmd0 := true.B
                 }

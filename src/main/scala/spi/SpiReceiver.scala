@@ -108,4 +108,5 @@ class SpiReceiver extends Module {
 
 object SpiReceiver extends App {
   chisel3.Driver.execute(args,()=>new SpiReceiver())
+  chisel3.Driver.execute(args, () => new spi.debugger.SpiReceiverLedDebugger())
 }
