@@ -10,6 +10,7 @@ class SpiSlave extends Bundle {
     val CS = Input(Bool())    // Chip Select
     val DI = Input(Bool())    // Data Input
     val DO = Output(Bool())   // Data Output
+    val CLK = Input(Clock())  // Clock
 }
 
 class SpiReceiver extends Module {
@@ -59,56 +60,58 @@ class SpiReceiver extends Module {
     io.Command := commandVec.asUInt
     io.CommandArgument := commandArgumentVec.asUInt
 
-    byteBuffer(byteCounter) := io.SPI.DI
-    when(byteCounter === 7.U) {
-        switch(state) {
-            is(state_command) {   // command
-                when(byteBuffer(0) === false.B && byteBuffer(1) === true.B) {
-                    state := state_argument
-                    for(i <- 0 until 6)
-                        commandBuffer.write(i.U, byteBuffer(2 + i))
-                    counter := 0.U
-                }
-            }
-            is(state_argument) {   // argument
-                switch(counter) {
-                    is(0.U) {
-                        for(i <- 0 until 8)
-                            commandArgumentBuffer.write(i.U, byteBuffer(i))
-                    }
-                    is(1.U) {
-                        for(i <- 0 until 8)
-                            commandArgumentBuffer.write((8 + i).U, byteBuffer(i))
-                    }
-                    is(2.U) {
-                        for(i <- 0 until 8)
-                            commandArgumentBuffer.write((16 + i).U, byteBuffer(i))
-                    }
-                    is(3.U) {
-                        for(i <- 0 until 8)
-                            commandArgumentBuffer.write((24 + i).U, byteBuffer(i))
+    withClock(io.SPI.CLK) {
+        byteBuffer(byteCounter) := io.SPI.DI
+        when(byteCounter === 7.U) {
+            switch(state) {
+                is(state_command) {   // command
+                    when(byteBuffer(0) === false.B && byteBuffer(1) === true.B) {
+                        state := state_argument
+                        for(i <- 0 until 6)
+                            commandBuffer.write(i.U, byteBuffer(2 + i))
+                        counter := 0.U
                     }
                 }
-                counter := counter + 1.U
-                when(counter === 3.U) {
-                    state := state_crc
-                    counter := 0.U
-                }.otherwise{
+                is(state_argument) {   // argument
+                    switch(counter) {
+                        is(0.U) {
+                            for(i <- 0 until 8)
+                                commandArgumentBuffer.write(i.U, byteBuffer(i))
+                        }
+                        is(1.U) {
+                            for(i <- 0 until 8)
+                                commandArgumentBuffer.write((8 + i).U, byteBuffer(i))
+                        }
+                        is(2.U) {
+                            for(i <- 0 until 8)
+                                commandArgumentBuffer.write((16 + i).U, byteBuffer(i))
+                        }
+                        is(3.U) {
+                            for(i <- 0 until 8)
+                                commandArgumentBuffer.write((24 + i).U, byteBuffer(i))
+                        }
+                    }
                     counter := counter + 1.U
+                    when(counter === 3.U) {
+                        state := state_crc
+                        counter := 0.U
+                    }.otherwise{
+                        counter := counter + 1.U
+                    }
                 }
-            }
-            is(state_crc) {   // CRC
-                readSuccess := byteBuffer(7) === true.B
-                for(i <- 0 until 6)
-                    crcBuffer.write(i.U, byteBuffer(i))
-                state := Mux(commandVec.asUInt === 24.U, state_single_writing , state_command)
-            }
-            // is(state_single_writing) { // Single Block Write
+                is(state_crc) {   // CRC
+                    readSuccess := byteBuffer(7) === true.B
+                    for(i <- 0 until 6)
+                        crcBuffer.write(i.U, byteBuffer(i))
+                    state := Mux(commandVec.asUInt === 24.U, state_single_writing , state_command)
+                }
+                // is(state_single_writing) { // Single Block Write
 
-            // }
+                // }
+            }
         }
+        byteCounter := byteCounter + 1.U
     }
-    byteCounter := byteCounter + 1.U
 }
 
 object SpiReceiver extends App {

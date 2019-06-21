@@ -14,6 +14,7 @@ module SpiReceiverTest(
     output [2:0]  __counter
 );
     reg clk;
+    reg __clk;
     reg di;
 
     reg rest;
@@ -31,6 +32,10 @@ module SpiReceiverTest(
     task do_clock;
         begin
             #1 clk = 1'b1;
+            __clk = 1'b1;
+            #1 clk = 1'b0;
+            #1 clk = 1'b1;
+            __clk = 1'b0;
             #1 clk = 1'b0;
         end
     endtask
@@ -38,7 +43,7 @@ module SpiReceiverTest(
     assign K = 123;
     assign L = 128912;
 
-    SpiReceiver tester(.clock(clk), .reset(rest), .io_SPI_CS(1'b0), .io_SPI_DI(di), .io_SPI_DO(SPI_DO), .io_DO(1'b0), .io_DI(__ignore), .io_CommandReadFinished(CommandReadFinished), .io_ArgumentReadFinished(ArgumentReadFinished), .io_ReadSuccess(ReadSuccess), .io_Command(Command), .io_CommandArgument(CommandArgument), .io____state(__state), .io____counter(__counter));
+    SpiReceiver tester(.clock(__clk), .reset(rest), .io_SPI_CLK(clk), .io_SPI_CS(1'b0), .io_SPI_DI(di), .io_SPI_DO(SPI_DO), .io_DO(1'b0), .io_DI(__ignore), .io_CommandReadFinished(CommandReadFinished), .io_ArgumentReadFinished(ArgumentReadFinished), .io_ReadSuccess(ReadSuccess), .io_Command(Command), .io_CommandArgument(CommandArgument), .io____state(__state), .io____counter(__counter));
     initial begin
         rest = 1'b1;
         clk = 1'b0;
