@@ -8,7 +8,6 @@ class SpiReceiverLedDebugger extends Module {
     val io = IO(new Bundle{
         val CommandReadFinished = Input(Bool())
         val ArgumentReadFinished = Input(Bool())
-        val Reading = Input(Bool())
         val ReadSuccess = Input(Bool())
         val Command = Input(UInt(6.W))
         val CommandArgument = Input(UInt(32.W))
@@ -36,6 +35,7 @@ class SpiReceiverLedDebugger extends Module {
             when(io.Command === 41.U) {
                 acmd41 := true.B
             }
+            after_apcommand := false.B
         }.otherwise {
             switch(io.Command) {
                 is(0.U){
