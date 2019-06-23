@@ -5,6 +5,8 @@ import chisel3.util._
 import chisel3.experimental.withClock
 
 class SpiReceiverLedDebugger extends Module {
+    def risingedge(x: Bool) = x && !RegNext(x)
+
     val io = IO(new Bundle{
         val CommandReadFinished = Input(Bool())
         val ArgumentReadFinished = Input(Bool())
@@ -20,7 +22,6 @@ class SpiReceiverLedDebugger extends Module {
     })
 
     val after_apcommand = RegInit(false.B)
-    val prevReadSuccess = RegNext(io.ReadSuccess)
 
     val cmd0 = RegInit(false.B)  
     val cmd8 = RegInit(false.B)
@@ -33,7 +34,7 @@ class SpiReceiverLedDebugger extends Module {
     io.CMD16 := cmd16
     io.CMD55 := after_apcommand
 
-    when(io.ReadSuccess =/= prevReadSuccess) {
+    when(risingedge(io.ReadSuccess)) {
         when(after_apcommand) {
             when(io.Command === 41.U) {
                 acmd41 := true.B

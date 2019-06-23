@@ -10,7 +10,7 @@ class SpiSlave extends Bundle {
     val CS = Input(Bool())    // Chip Select
     val DI = Input(Bool())    // Data Input
     val DO = Output(Bool())   // Data Output
-    val CLK = Input(Clock())  // Clock
+    val CLK = Input(Bool())  // Clock
 }
 
 class SpiReceiverStructure extends Bundle {
@@ -19,6 +19,7 @@ class SpiReceiverStructure extends Bundle {
 }
 
 class SpiReceiver extends Module {
+    def risingedge(x: Bool) = x && !RegNext(x)
     val io = IO(new Bundle{
         val SPI = new SpiSlave
         val DO = Input(Bool())
@@ -35,32 +36,32 @@ class SpiReceiver extends Module {
     io.DI := io.SPI.DI
     io.SPI.DO := io.DO
 
-    withClock(io.SPI.CLK) {
-        val state_init :: state_command  :: state_argument ::  state_crc :: state_single_writing :: Nil = Enum(5)
-        val state = RegInit(state_init)
-        io.___state := state
+    val state_init :: state_command  :: state_argument ::  state_crc :: state_single_writing :: Nil = Enum(5)
+    val state = RegInit(state_init)
+    io.___state := state
 
-        val crcVec = Reg(Vec(7, Bool()))
-        val readSuccess = RegInit(false.B)
+    val crcVec = Reg(Vec(7, Bool()))
+    val readSuccess = RegInit(false.B)
 
-        val counter = RegInit(0.U(8.W))
+    val counter = RegInit(0.U(8.W))
 
-        val commandVec = Reg(Vec(6, Bool()))
-        val commandArgumentVec = Reg(Vec(32, Bool()))
+    val commandVec = Reg(Vec(6, Bool()))
+    val commandArgumentVec = Reg(Vec(32, Bool()))
 
-        io.Command := commandVec.asUInt
-        io.CommandArgument := commandArgumentVec.asUInt
+    io.Command := commandVec.asUInt
+    io.CommandArgument := commandArgumentVec.asUInt
 
-        val byteBuffer = Reg(Vec(8, Bool()))
-        val byteCounter = RegInit(0.U(3.W))
+    val byteBuffer = Reg(Vec(8, Bool()))
+    val byteCounter = RegInit(0.U(3.W))
 
-        io.CommandReadFinished := state > state_command
-        io.ArgumentReadFinished := state > state_argument
-        io.ReadSuccess := readSuccess
+    io.CommandReadFinished := state > state_command
+    io.ArgumentReadFinished := state > state_argument
+    io.ReadSuccess := readSuccess
 
-        io.___buffer := byteBuffer.asUInt
-        io.___counter := byteCounter
+    io.___buffer := byteBuffer.asUInt
+    io.___counter := byteCounter
 
+    when(risingedge(io.SPI.CLK)) {
         when(byteCounter === 7.U){
             switch(state) {
                 is(state_init) { // init -> ignore
