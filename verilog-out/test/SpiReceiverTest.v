@@ -32,17 +32,17 @@ module SpiReceiverTest(
 
     task do_clock;
         begin
-            #1 __clk = 1'b1;
-            clk = 1'b1;
             #1 __clk = 1'b0;
-            #1 __clk = 1'b1;
             clk = 1'b0;
+            #1 __clk = 1'b1;
             #1 __clk = 1'b0;
+            clk = 1'b1;
+            #1 __clk = 1'b1;
         end
     endtask
     
     assign K = 123;
-    assign L = 128912;
+    assign L = 128913;
 
     SpiReceiver tester(.clock(__clk), .reset(rest), .io_SPI_CLK(clk), .io_SPI_CS(1'b0), .io_SPI_DI(di), .io_SPI_DO(SPI_DO), .io_DO(1'b0), .io_DI(__ignore), .io_CommandReadFinished(CommandReadFinished), .io_ArgumentReadFinished(ArgumentReadFinished), .io_ReadSuccess(ReadSuccess), .io_Command(Command), .io_CommandArgument(CommandArgument), .io____state(__state), .io____counter(__counter), .io____buffer(__buffer));
     initial begin

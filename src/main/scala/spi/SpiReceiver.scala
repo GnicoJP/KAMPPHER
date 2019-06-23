@@ -35,35 +35,24 @@ class SpiReceiver extends Module {
     io.DI := io.SPI.DI
     io.SPI.DO := io.DO
 
-    val state_command  :: state_argument ::  state_crc :: state_single_writing :: Nil = Enum(4)
-    val state = RegInit(state_command)
-    io.___state := state
+    withClock(io.SPI.CLK) {
+        val state_init :: state_command  :: state_argument ::  state_crc :: state_single_writing :: Nil = Enum(5)
+        val state = RegInit(state_init)
+        io.___state := state
 
-    val crcBuffer = SyncReadMem(7, Bool())
-    val readSuccess = RegInit(false.B)
+        val crcVec = Reg(Vec(7, Bool()))
+        val readSuccess = RegInit(false.B)
 
-    val counter = RegInit(0.U(8.W))
-    val writeBacked = RegInit(true.B)
+        val counter = RegInit(0.U(8.W))
 
-    val commandVec = Wire(Vec(6, Bool()))
-    val commandArgumentVec = Wire(Vec(32, Bool()))
-    val commandBuffer = SyncReadMem(6, Bool())
-    val commandArgumentBuffer = SyncReadMem(32, Bool())
-    for(i <- 0 until 6)
-        commandVec(i) := commandBuffer(i)
+        val commandVec = Reg(Vec(6, Bool()))
+        val commandArgumentVec = Reg(Vec(32, Bool()))
 
-    for(i <- 0 until 32)
-        commandArgumentVec(i) := commandArgumentBuffer(i)
+        io.Command := commandVec.asUInt
+        io.CommandArgument := commandArgumentVec.asUInt
 
-    io.Command := commandVec.asUInt
-    io.CommandArgument := commandArgumentVec.asUInt
-
-    val byteBuffer = withClock(io.SPI.CLK) {
         val byteBuffer = Reg(Vec(8, Bool()))
         val byteCounter = RegInit(0.U(3.W))
-        val result = Wire(new SpiReceiverStructure())
-        result.Counter := byteCounter
-        result.Buffer := byteBuffer.asUInt
 
         io.CommandReadFinished := state > state_command
         io.ArgumentReadFinished := state > state_argument
@@ -72,60 +61,60 @@ class SpiReceiver extends Module {
         io.___buffer := byteBuffer.asUInt
         io.___counter := byteCounter
 
-        byteBuffer(byteCounter) := io.SPI.DI
-        byteCounter := byteCounter + 1.U
-        writeBacked := true.B
-        result
-    }
-    when(writeBacked === false.B && byteBuffer.Counter === 0.U) {
-        switch(state) {
-            is(state_command) {   // command
-                when(byteBuffer.Buffer(0) === false.B && byteBuffer.Buffer(1) === true.B) {
-                    state := state_argument
-                    for(i <- 0 until 6)
-                        commandBuffer.write(i.U, byteBuffer.Buffer(2 + i))
-                    counter := 0.U
+        when(byteCounter === 7.U){
+            switch(state) {
+                is(state_init) { // init -> ignore
+                    state := state_command
                 }
-            }
-            is(state_argument) {   // argument
-                switch(counter) {
-                    is(0.U) {
-                        for(i <- 0 until 8)
-                            commandArgumentBuffer.write(i.U, byteBuffer.Buffer(i))
-                    }
-                    is(1.U) {
-                        for(i <- 0 until 8)
-                            commandArgumentBuffer.write((8 + i).U, byteBuffer.Buffer(i))
-                    }
-                    is(2.U) {
-                        for(i <- 0 until 8)
-                            commandArgumentBuffer.write((16 + i).U, byteBuffer.Buffer(i))
-                    }
-                    is(3.U) {
-                        for(i <- 0 until 8)
-                            commandArgumentBuffer.write((24 + i).U, byteBuffer.Buffer(i))
+                is(state_command) {   // command
+                    readSuccess := false.B
+                    when(byteBuffer(0) === false.B && byteBuffer(1) === true.B) {
+                        state := state_argument
+                        for(i <- 0 until 6)
+                            commandVec(i.U) := byteBuffer(2 + i)
+                        counter := 0.U
                     }
                 }
-                counter := counter + 1.U
-                when(counter === 3.U) {
-                    state := state_crc
-                    counter := 0.U
-                }.otherwise{
+                is(state_argument) {   // argument
+                    switch(counter) {
+                        is(0.U) {
+                            for(i <- 0 until 8)
+                                commandArgumentVec(i.U) := byteBuffer(i)
+                        }
+                        is(1.U) {
+                            for(i <- 0 until 8)
+                                commandArgumentVec((8 + i).U) := byteBuffer(i)
+                        }
+                        is(2.U) {
+                            for(i <- 0 until 8)
+                                commandArgumentVec((16 + i).U) :=  byteBuffer(i)
+                        }
+                        is(3.U) {
+                            for(i <- 0 until 8)
+                                commandArgumentVec((24 + i).U) := byteBuffer(i)
+                        }
+                    }
                     counter := counter + 1.U
+                    when(counter === 3.U) {
+                        state := state_crc
+                        counter := 0.U
+                    }.otherwise{
+                        counter := counter + 1.U
+                    }
                 }
-            }
-            is(state_crc) {   // CRC
-                readSuccess := byteBuffer.Buffer(7) === true.B
-                for(i <- 0 until 6)
-                    crcBuffer.write(i.U, byteBuffer.Buffer(i))
-                state := Mux(commandVec.asUInt === 24.U, state_single_writing , state_command)
-            }
-            // is(state_single_writing) { // Single Block Write
+                is(state_crc) {   // CRC
+                    readSuccess := byteBuffer(7) === true.B
+                    for(i <- 0 until 6)
+                        crcVec(i.U) := byteBuffer(i)
+                    state := Mux(commandVec.asUInt === 24.U, state_single_writing , state_command)
+                }
+                // is(state_single_writing) { // Single Block Write
 
-            // }
+                // }
+            }
         }
-    }.elsewhen(byteBuffer.Counter =/= 0.U) {
-        writeBacked := false.B
+        byteBuffer(byteCounter + 1.U) := io.SPI.DI
+        byteCounter := byteCounter + 1.U
     }
 }
 

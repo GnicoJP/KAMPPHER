@@ -16,9 +16,11 @@ class SpiReceiverLedDebugger extends Module {
         val CMD8 = Output(Bool())
         val ACMD41 = Output(Bool())
         val CMD16 = Output(Bool())
+        val CMD55 = Output(Bool())
     })
 
     val after_apcommand = RegInit(false.B)
+    val prevReadSuccess = RegNext(io.ReadSuccess)
 
     val cmd0 = RegInit(false.B)  
     val cmd8 = RegInit(false.B)
@@ -29,8 +31,9 @@ class SpiReceiverLedDebugger extends Module {
     io.CMD8 := cmd8
     io.ACMD41 := acmd41
     io.CMD16 := cmd16
+    io.CMD55 := after_apcommand
 
-    when(io.ReadSuccess === true.B) {
+    when(io.ReadSuccess =/= prevReadSuccess) {
         when(after_apcommand) {
             when(io.Command === 41.U) {
                 acmd41 := true.B

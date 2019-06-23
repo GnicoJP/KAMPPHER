@@ -16,7 +16,8 @@ module SpiReceiverTest2(
     output debug_CMD0,
     output debug_CMD8,
     output debug_ACMD41,
-    output debug_CMD16
+    output debug_CMD16,
+    output debug_CMD55
 );
     reg clk;
     reg __clk;
@@ -63,7 +64,7 @@ module SpiReceiverTest2(
                 do_clock();
             end
 
-            for(i = 0; i < 6; i = i + 1) begin
+            for(i = 0; i < 7; i = i + 1) begin
                 do_clock();
             end
             
@@ -73,7 +74,7 @@ module SpiReceiverTest2(
     endtask
     
     SpiReceiver tester(.clock(__clk), .reset(rest), .io_SPI_CLK(clk), .io_SPI_CS(1'b0), .io_SPI_DI(di), .io_SPI_DO(SPI_DO), .io_DO(1'b0), .io_DI(__ignore), .io_CommandReadFinished(CommandReadFinished), .io_ArgumentReadFinished(ArgumentReadFinished), .io_ReadSuccess(ReadSuccess), .io_Command(Command), .io_CommandArgument(CommandArgument), .io____state(__state), .io____counter(__counter), .io____buffer(__buffer));
-    SpiReceiverLedDebugger tester2(.clock(__clk), .reset(rest), .io_CommandReadFinished(CommandReadFinished), .io_ArgumentReadFinished(ArgumentReadFinished), .io_ReadSuccess(ReadSuccess), .io_Command(Command), .io_CommandArgument(CommandArgument), .io_CMD0(debug_CMD0), .io_CMD8(debug_CMD8), .io_ACMD41(debug_ACMD41), .io_CMD16(debug_CMD16));
+    SpiReceiverLedDebugger tester2(.clock(__clk), .reset(rest), .io_CommandReadFinished(CommandReadFinished), .io_ArgumentReadFinished(ArgumentReadFinished), .io_ReadSuccess(ReadSuccess), .io_Command(Command), .io_CommandArgument(CommandArgument), .io_CMD0(debug_CMD0), .io_CMD8(debug_CMD8), .io_ACMD41(debug_ACMD41), .io_CMD16(debug_CMD16), .io_CMD55(debug_CMD55));
     initial begin
         rest = 1'b1;
         clk = 1'b0;
@@ -83,7 +84,7 @@ module SpiReceiverTest2(
 
         do_clock();
         rest = 1'b0;
-        for(i = 0; i < 8; i = i + 1) begin
+        for(i = 0; i < 7; i = i + 1) begin
             do_clock();
         end
 
