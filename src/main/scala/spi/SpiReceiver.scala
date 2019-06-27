@@ -19,7 +19,8 @@ class SpiReceiverStructure extends Bundle {
 }
 
 class SpiReceiver extends Module {
-    def risingedge(x: Bool) = x && !RegNext(x)
+    def risingedge(x: Bool) = 
+        x && !RegNext(x)
     val io = IO(new Bundle{
         val SPI = new SpiSlave
         val DO = Input(Bool())
@@ -43,7 +44,7 @@ class SpiReceiver extends Module {
     val crcVec = Reg(Vec(7, Bool()))
     val readSuccess = RegInit(false.B)
 
-    val counter = RegInit(0.U(8.W))
+    val counter = RegInit(7.U(8.W))
 
     val commandVec = Reg(Vec(6, Bool()))
     val commandArgumentVec = Reg(Vec(32, Bool()))
@@ -52,7 +53,7 @@ class SpiReceiver extends Module {
     io.CommandArgument := commandArgumentVec.asUInt
 
     val byteBuffer = Reg(Vec(8, Bool()))
-    val byteCounter = RegInit(0.U(3.W))
+    val byteCounter = RegInit(7.U(3.W))
 
     io.CommandReadFinished := state > state_command
     io.ArgumentReadFinished := state > state_argument

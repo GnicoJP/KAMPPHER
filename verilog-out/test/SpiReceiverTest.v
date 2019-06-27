@@ -32,12 +32,12 @@ module SpiReceiverTest(
 
     task do_clock;
         begin
-            #1 __clk = 1'b0;
-            clk = 1'b0;
             #1 __clk = 1'b1;
             #1 __clk = 1'b0;
             clk = 1'b1;
             #1 __clk = 1'b1;
+            #1 __clk = 1'b0;
+            clk = 1'b0;
         end
     endtask
     
@@ -51,7 +51,8 @@ module SpiReceiverTest(
         __clk = 1'b0;
         di = 1'b1;
 
-        do_clock();
+        #1 __clk = 1'b1;
+        #1 __clk = 1'b0;
         rest = 1'b0;
         for(i = 0; i < 8; i = i + 1) begin
             do_clock();

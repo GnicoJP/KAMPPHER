@@ -82,9 +82,8 @@ module SpiReceiverTest2(
         K = 50;
         L = 1218;
 
-        do_clock();
         rest = 1'b0;
-        for(i = 0; i < 7; i = i + 1) begin
+        for(i = 0; i < 8; i = i + 1) begin
             do_clock();
         end
 
