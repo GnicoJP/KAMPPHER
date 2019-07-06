@@ -41,6 +41,13 @@ module SpiReceiverTest(
         end
     endtask
     
+    task do_clock2;
+        begin
+            #1 __clk = 1'b1;
+            #1 __clk = 1'b0;
+        end
+    endtask
+
     assign K = 123;
     assign L = 128913;
 
@@ -51,9 +58,12 @@ module SpiReceiverTest(
         __clk = 1'b0;
         di = 1'b1;
 
-        #1 __clk = 1'b1;
-        #1 __clk = 1'b0;
+        do_clock2();
         rest = 1'b0;
+        for(i = 0; i < 10; i = i + 1) begin
+            do_clock2();
+        end
+
         for(i = 0; i < 8; i = i + 1) begin
             do_clock();
         end

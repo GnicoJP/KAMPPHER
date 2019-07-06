@@ -3,6 +3,7 @@ package spi
 import chisel3._
 import chisel3.util._
 import chisel3.experimental.withClock
+import chisel3.experimental.withClockAndReset
 /*
  * SPI SLAVE INTERFACE
  */
@@ -10,7 +11,7 @@ class SpiSlave extends Bundle {
     val CS = Input(Bool())    // Chip Select
     val DI = Input(Bool())    // Data Input
     val DO = Output(Bool())   // Data Output
-    val CLK = Input(Bool())  // Clock
+    val CLK = Input(Clock())  // Clock
 }
 
 class SpiReceiverStructure extends Bundle {
@@ -37,33 +38,43 @@ class SpiReceiver extends Module {
     io.DI := io.SPI.DI
     io.SPI.DO := io.DO
 
-    val state_init :: state_command  :: state_argument ::  state_crc :: state_single_writing :: Nil = Enum(5)
-    val state = RegInit(state_init)
-    io.___state := state
+    val resetSignal = RegInit(true.B)
 
-    val crcVec = Reg(Vec(7, Bool()))
-    val readSuccess = RegInit(false.B)
+    withClockAndReset(io.SPI.CLK, resetSignal) {
+        val state_init :: state_command  :: state_argument ::  state_crc :: state_single_writing :: Nil = Enum(5)
+        val state = RegInit(state_init)
+        io.___state := state
 
-    val counter = RegInit(7.U(8.W))
+        val crcVec = Reg(Vec(7, Bool()))
+        val readSuccess = RegInit(false.B)
 
-    val commandVec = Reg(Vec(6, Bool()))
-    val commandArgumentVec = Reg(Vec(32, Bool()))
+        val counter = RegInit(0.U(8.W))
 
-    io.Command := commandVec.asUInt
-    io.CommandArgument := commandArgumentVec.asUInt
+        val commandVec = Reg(Vec(6, Bool()))
+        val commandArgumentVec = Reg(Vec(32, Bool()))
 
-    val byteBuffer = Reg(Vec(8, Bool()))
-    val byteCounter = RegInit(7.U(3.W))
+        io.Command := commandVec.asUInt
+        io.CommandArgument := commandArgumentVec.asUInt
 
-    io.CommandReadFinished := state > state_command
-    io.ArgumentReadFinished := state > state_argument
-    io.ReadSuccess := readSuccess
+        val buffer = RegInit(VecInit(List.fill(8)(true.B)))
 
-    io.___buffer := byteBuffer.asUInt
-    io.___counter := byteCounter
+        val byteBuffer = RegInit(VecInit(List.fill(8)(true.B)))
+        val byteCounter = RegInit(1.U(3.W))
 
-    when(risingedge(io.SPI.CLK)) {
-        when(byteCounter === 7.U){
+        io.CommandReadFinished := state > state_command
+        io.ArgumentReadFinished := state > state_argument
+        io.ReadSuccess := readSuccess
+
+        io.___buffer := byteBuffer.asUInt
+        io.___counter := byteCounter
+
+        buffer(byteCounter) := io.SPI.DI
+        byteCounter := byteCounter + 1.U
+
+        when(byteCounter === 0.U){
+            for(i <- 0 until 8)
+                byteBuffer(i) := buffer(i)
+        }.elsewhen(byteCounter === 1.U){
             switch(state) {
                 is(state_init) { // init -> ignore
                     state := state_command
@@ -115,12 +126,15 @@ class SpiReceiver extends Module {
                 // }
             }
         }
-        byteBuffer(byteCounter + 1.U) := io.SPI.DI
-        byteCounter := byteCounter + 1.U
+    }
+
+    when(risingedge(io.SPI.CLK.asUInt.toBool)) {
+        resetSignal := false.B
     }
 }
 
 object SpiReceiver extends App {
   chisel3.Driver.execute(args,()=>new SpiReceiver())
   chisel3.Driver.execute(args, () => new spi.debugger.SpiReceiverLedDebugger())
+  chisel3.Driver.execute(args, () => new spi.debugger.SpiReceiverLedDebugger2())
 }
