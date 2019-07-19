@@ -14,16 +14,16 @@ module SpiBuffer(
    assign Changed = changed;
 
    always @(posedge CLK) begin
-       if CS begin
+       if (CS) begin
            counter <= 0;
-           outer_buffer <= 8b'11111111;
-           chanegd <= 0;
+           outer_buffer <= 8'b11111111;
+           changed <= 0;
        end else begin
-           if counter[3] begin
+           if (counter[3]) begin
                outer_buffer <= inner_buffer;
                counter <= 0;
                changed <= 1;
-           else
+           end else begin
                counter <= counter + 1;
                changed <= changed & ~(counter[2]);
            end

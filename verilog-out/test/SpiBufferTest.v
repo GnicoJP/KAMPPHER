@@ -27,7 +27,7 @@ module SpiBufferTest();
                 doClock();
             end
         end
-    end
+    endtask
     initial begin
         doClock();
         doClock();
