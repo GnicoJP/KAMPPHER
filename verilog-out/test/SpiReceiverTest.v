@@ -11,11 +11,14 @@ module SpiReceiverTest();
     wire [2:0] __state;
     wire [31:0] CommandArgument;
     wire CommandReadFinished;
+    wire [7:0] blockSize;
     reg rest;
 
     integer i, j;
     wire [5:0] K;
     wire [31:0] L;
+
+    assign blockSize = 2048;
 
     task do_clock;
         begin
@@ -39,13 +42,13 @@ module SpiReceiverTest();
     assign L = 128913;
 
     SpiBuffer spiBuf(.DI(DI), .CS(CS), .CLK(CLK), .Buffer(Buf), .Changed(changed));
-    SpiReceiver tester(.clock(__clk), .reset(rest), .io_InputBuffer(Buf), .io_BufferChange(changed), .io_CommandReadFinished(CommandReadFinished), .io_ArgumentReadFinished(ArgumentReadFinished), .io_ReadSuccess(ReadSuccess), .io_Command(Command), .io_CommandArgument(CommandArgument), .io____state(__state));
+    SpiReceiver tester(.clock(__clk), .reset(rest), .io_InputBuffer(Buf), .io_BufferChange(changed), .io_DataBlockSize(blockSize), .io_CommandReadFinished(CommandReadFinished), .io_ArgumentReadFinished(ArgumentReadFinished), .io_ReadSuccess(ReadSuccess), .io_Command(Command), .io_CommandArgument(CommandArgument), .io____state(__state));
     initial begin
-        rest = 1'b1;
         CS = 1'b1;
         CLK = 1'b0;
         __clk = 1'b0;
         DI = 1'b1;
+        rest = 1'b1;
 
         do_clock();
         rest = 1'b0;
