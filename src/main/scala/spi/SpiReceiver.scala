@@ -21,10 +21,10 @@ class SpiReceiver extends Module {
         val CommandArgument = Output(UInt(32.W))
         val ___state = Output(UInt(3.W))
     })
-    val state_init :: state_command :: state_argument ::  state_crc :: state_write :: Nil = Enum(5)
+    val state_command :: state_argument ::  state_crc :: state_write :: Nil = Enum(4)
     val writestate_token :: writestate_data :: writestate_crc :: Nil = Enum(3)
     val writestate_isSingle = Reg(Bool())
-    val state = RegInit(state_init)
+    val state = RegInit(state_command)
     val writestate = RegInit(writestate_token)
     io.___state := state
 
@@ -47,15 +47,12 @@ class SpiReceiver extends Module {
 
     when(risingedge(io.BufferChanged)) {
         switch(state) {
-            is(state_init) { // init -> ignore
-                state := state_command
-            }
             is(state_command) {   // command
                 readSuccess := false.B
-                when(io.InputBuffer(0) === false.B && io.InputBuffer(1) === true.B) {
+                when(io.InputBuffer(7) === false.B && io.InputBuffer(6) === true.B) {
                     state := state_argument
                     for(i <- 0 until 6)
-                        commandVec(i.U) := io.InputBuffer(2 + i)
+                        commandVec(i.U) := io.InputBuffer(i)
                     counter := 0.U
                 }
             }
@@ -63,28 +60,28 @@ class SpiReceiver extends Module {
                 switch(counter) {
                     is(0.U) {
                         for(i <- 0 until 8)
-                            commandArgumentVec(i.U) := io.InputBuffer(i)
+                            commandArgumentVec(24 + i) := io.InputBuffer(i)
                     }
                     is(1.U) {
                         for(i <- 0 until 8)
-                            commandArgumentVec((8 + i).U) := io.InputBuffer(i)
+                            commandArgumentVec(16 + i) := io.InputBuffer(i)
                     }
                     is(2.U) {
                         for(i <- 0 until 8)
-                            commandArgumentVec((16 + i).U) :=  io.InputBuffer(i)
+                            commandArgumentVec(8 + i) :=  io.InputBuffer(i)
                     }
                     is(3.U) {
                         for(i <- 0 until 8)
-                            commandArgumentVec((24 + i).U) := io.InputBuffer(i)
+                            commandArgumentVec(i) := io.InputBuffer(i)
                         state := state_crc
                     }
                 }
                 counter := counter + 1.U
             }
             is(state_crc) {   // CRC
-                readSuccess := io.InputBuffer(7) === true.B
+                readSuccess := io.InputBuffer(0) === true.B
                 for(i <- 0 until 6)
-                    crcVec(i.U) := io.InputBuffer(i)
+                    crcVec(i) := io.InputBuffer(i + 1)
                 when(commandVecAsUInt === 24.U) {
                     state := state_write
                     writestate_isSingle := true.B

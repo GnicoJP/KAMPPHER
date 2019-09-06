@@ -9,8 +9,8 @@ import chisel3.experimental.withClock
 class AvalonSlave(val data_size : Int, val address_size : Int) extends Bundle {
     val address = Input(UInt(address_size.W))
     val read = Input(Bool())
-    val readdata = Input(UInt(data_size.W))
+    val readdata = Output(UInt(data_size.W))
     val write = Input(Bool())
     val writedata = Input(UInt(data_size.W))
-    val waitrequest = Input(Bool())
+    val waitrequest = Output(Bool())
 }
