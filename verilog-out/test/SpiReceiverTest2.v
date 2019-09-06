@@ -14,7 +14,7 @@ module SpiReceiverTest2();
     wire [7:0] blockSize;
     reg rest;
 
-    integer i, j;
+    integer i;
     reg [5:0] K;
     reg [31:0] L;
 
@@ -39,17 +39,17 @@ module SpiReceiverTest2();
             DI = 1'b1;
             do_clock();
 
-            for(i = 0;i < 6; i = i + 1) begin
+            for(i = 5;i >= 0; i = i - 1) begin
                 DI = K[i];
                 do_clock();
             end
 
-            for(i = 0; i < 32; i = i + 1) begin
+            for(i = 31; i >= 0; i = i - 1) begin
                 DI = L[i];
                 do_clock();
             end
 
-            for(i = 0; i < 7; i = i + 1) begin
+            for(i = 6; i >= 0; i = i - 1) begin
                 do_clock();
             end
             

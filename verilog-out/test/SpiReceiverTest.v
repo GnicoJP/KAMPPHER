@@ -14,7 +14,7 @@ module SpiReceiverTest();
     wire [7:0] blockSize;
     reg rest;
 
-    integer i, j;
+    integer i;
     wire [5:0] K;
     wire [31:0] L;
 
@@ -42,7 +42,7 @@ module SpiReceiverTest();
     assign L = 128913;
 
     SpiBuffer spiBuf(.DI(DI), .CS(CS), .CLK(CLK), .Buffer(Buf), .Changed(changed));
-    SpiReceiver tester(.clock(__clk), .reset(rest), .io_InputBuffer(Buf), .io_BufferChange(changed), .io_DataBlockSize(blockSize), .io_CommandReadFinished(CommandReadFinished), .io_ArgumentReadFinished(ArgumentReadFinished), .io_ReadSuccess(ReadSuccess), .io_Command(Command), .io_CommandArgument(CommandArgument), .io____state(__state));
+    SpiReceiver tester(.clock(__clk), .reset(rest), .io_InputBuffer(Buf), .io_BufferChanged(changed), .io_DataBlockSize(blockSize), .io_CommandReadFinished(CommandReadFinished), .io_ArgumentReadFinished(ArgumentReadFinished), .io_ReadSuccess(ReadSuccess), .io_Command(Command), .io_CommandArgument(CommandArgument), .io____state(__state));
     initial begin
         CS = 1'b1;
         CLK = 1'b0;
@@ -65,17 +65,17 @@ module SpiReceiverTest();
         DI = 1'b1;
         do_clock();
 
-        for(i = 0;i < 6; i = i + 1) begin
+        for(i = 5;i >= 0; i = i - 1) begin
             DI = K[i];
             do_clock();
         end
 
-        for(i = 0; i < 32; i = i + 1) begin
+        for(i = 31; i >= 0; i = i - 1) begin
             DI = L[i];
             do_clock();
         end
 
-        for(i = 0; i < 6; i = i + 1) begin
+        for(i = 5; i >= 0; i = i - 1) begin
             do_clock();
         end
         

@@ -22,7 +22,7 @@ module SpiBufferTest();
 
     task doWrite;
         begin
-            for(i = 0;i < 8; i = i + 1) begin
+            for(i = 7;i >= 0; i = i - 1) begin
                 DI = inDat[i];
                 doClock();
             end
