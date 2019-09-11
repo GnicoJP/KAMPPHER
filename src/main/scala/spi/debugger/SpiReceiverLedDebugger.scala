@@ -45,7 +45,7 @@ class SpiReceiverLedDebugger extends Module {
                 is(0.U){
                     cmd0 := true.B
                 }
-                is(9.U) {
+                is(8.U) {
                     cmd8 := true.B
                 }
                 is(55.U) {
