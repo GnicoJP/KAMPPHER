@@ -1,7 +1,7 @@
 module SpiBufferAvalonDebugger( // @[:@3.2]
   input         clock, // @[:@4.4]
   input         reset, // @[:@5.4]
-  input         io_Avalon_address, // @[:@6.4]
+  input  [6:0]  io_Avalon_address, // @[:@6.4]
   input         io_Avalon_read, // @[:@6.4]
   output [63:0] io_Avalon_readdata, // @[:@6.4]
   input         io_Avalon_write, // @[:@6.4]
@@ -10,54 +10,58 @@ module SpiBufferAvalonDebugger( // @[:@3.2]
   input  [7:0]  io_InputBuffer, // @[:@6.4]
   input         io_BufferChanged // @[:@6.4]
 );
-  reg [7:0] Buffer_0; // @[SpiBufferAvalonDebugger.scala 15:21:@8.4]
+  reg [7:0] mem [0:127]; // @[SpiBufferAvalonDebugger.scala 15:26:@8.4]
   reg [31:0] _RAND_0;
-  reg [7:0] Buffer_1; // @[SpiBufferAvalonDebugger.scala 15:21:@8.4]
+  wire [7:0] mem__T_33_data; // @[SpiBufferAvalonDebugger.scala 15:26:@8.4]
+  wire [6:0] mem__T_33_addr; // @[SpiBufferAvalonDebugger.scala 15:26:@8.4]
+  wire [7:0] mem__T_43_data; // @[SpiBufferAvalonDebugger.scala 15:26:@8.4]
+  wire [6:0] mem__T_43_addr; // @[SpiBufferAvalonDebugger.scala 15:26:@8.4]
+  wire  mem__T_43_mask; // @[SpiBufferAvalonDebugger.scala 15:26:@8.4]
+  wire  mem__T_43_en; // @[SpiBufferAvalonDebugger.scala 15:26:@8.4]
+  wire [7:0] mem__T_50_data; // @[SpiBufferAvalonDebugger.scala 15:26:@8.4]
+  wire [6:0] mem__T_50_addr; // @[SpiBufferAvalonDebugger.scala 15:26:@8.4]
+  wire  mem__T_50_mask; // @[SpiBufferAvalonDebugger.scala 15:26:@8.4]
+  wire  mem__T_50_en; // @[SpiBufferAvalonDebugger.scala 15:26:@8.4]
+  reg [6:0] Flip; // @[SpiBufferAvalonDebugger.scala 16:23:@9.4]
   reg [31:0] _RAND_1;
-  reg [55:0] Index_0; // @[SpiBufferAvalonDebugger.scala 16:24:@12.4]
-  reg [63:0] _RAND_2;
-  reg [55:0] Index_1; // @[SpiBufferAvalonDebugger.scala 16:24:@12.4]
-  reg [63:0] _RAND_3;
-  reg  Flip; // @[SpiBufferAvalonDebugger.scala 17:23:@13.4]
+  reg  waitRequest; // @[SpiBufferAvalonDebugger.scala 18:30:@11.4]
+  reg [31:0] _RAND_2;
+  wire  _GEN_1; // @[SpiBufferAvalonDebugger.scala 20:35:@14.4]
+  wire [7:0] _T_36; // @[SpiBufferAvalonDebugger.scala 25:20:@23.4]
+  wire [6:0] _T_37; // @[SpiBufferAvalonDebugger.scala 25:20:@24.4]
+  wire  _T_39; // @[SpiBufferAvalonDebugger.scala 26:28:@26.4]
+  wire [6:0] FlipNext; // @[SpiBufferAvalonDebugger.scala 26:20:@27.4]
+  reg  _T_46; // @[SpiBufferAvalonDebugger.scala 8:44:@36.6]
+  reg [31:0] _RAND_3;
+  wire  _T_48; // @[SpiBufferAvalonDebugger.scala 8:36:@38.6]
+  wire  _T_49; // @[SpiBufferAvalonDebugger.scala 8:33:@39.6]
+  wire  _GEN_9; // @[SpiBufferAvalonDebugger.scala 33:44:@40.6]
+  wire [6:0] _GEN_15; // @[SpiBufferAvalonDebugger.scala 28:23:@29.4]
+  wire  _GEN_16; // @[SpiBufferAvalonDebugger.scala 28:23:@29.4]
+  reg [6:0] mem__T_33_addr_pipe_0;
   reg [31:0] _RAND_4;
-  wire  _T_64; // @[SpiBufferAvalonDebugger.scala 21:37:@15.4]
-  wire [7:0] out_0; // @[SpiBufferAvalonDebugger.scala 21:18:@16.4]
-  wire [55:0] out_1; // @[SpiBufferAvalonDebugger.scala 22:18:@19.4]
-  reg  _T_72; // @[SpiBufferAvalonDebugger.scala 8:44:@24.4]
-  reg [31:0] _RAND_5;
-  wire  _T_74; // @[SpiBufferAvalonDebugger.scala 8:36:@26.4]
-  wire  _T_75; // @[SpiBufferAvalonDebugger.scala 8:33:@27.4]
-  wire [56:0] _T_77; // @[SpiBufferAvalonDebugger.scala 29:34:@31.8]
-  wire [55:0] _T_78; // @[SpiBufferAvalonDebugger.scala 29:34:@32.8]
-  wire [56:0] _T_80; // @[SpiBufferAvalonDebugger.scala 32:34:@37.8]
-  wire [55:0] _T_81; // @[SpiBufferAvalonDebugger.scala 32:34:@38.8]
-  wire [7:0] _GEN_0; // @[SpiBufferAvalonDebugger.scala 27:20:@29.6]
-  wire [55:0] _GEN_1; // @[SpiBufferAvalonDebugger.scala 27:20:@29.6]
-  wire [7:0] _GEN_2; // @[SpiBufferAvalonDebugger.scala 27:20:@29.6]
-  wire [55:0] _GEN_3; // @[SpiBufferAvalonDebugger.scala 27:20:@29.6]
-  wire  _T_82; // @[SpiBufferAvalonDebugger.scala 34:17:@41.6]
-  wire [55:0] _GEN_5; // @[SpiBufferAvalonDebugger.scala 26:40:@28.4]
-  wire [55:0] _GEN_7; // @[SpiBufferAvalonDebugger.scala 26:40:@28.4]
-  wire  _GEN_8; // @[SpiBufferAvalonDebugger.scala 26:40:@28.4]
-  assign _T_64 = io_Avalon_address == 1'h0; // @[SpiBufferAvalonDebugger.scala 21:37:@15.4]
-  assign out_0 = _T_64 ? Buffer_0 : Buffer_1; // @[SpiBufferAvalonDebugger.scala 21:18:@16.4]
-  assign out_1 = _T_64 ? Index_0 : Index_1; // @[SpiBufferAvalonDebugger.scala 22:18:@19.4]
-  assign _T_74 = _T_72 == 1'h0; // @[SpiBufferAvalonDebugger.scala 8:36:@26.4]
-  assign _T_75 = io_BufferChanged & _T_74; // @[SpiBufferAvalonDebugger.scala 8:33:@27.4]
-  assign _T_77 = Index_1 + 56'h1; // @[SpiBufferAvalonDebugger.scala 29:34:@31.8]
-  assign _T_78 = Index_1 + 56'h1; // @[SpiBufferAvalonDebugger.scala 29:34:@32.8]
-  assign _T_80 = Index_0 + 56'h1; // @[SpiBufferAvalonDebugger.scala 32:34:@37.8]
-  assign _T_81 = Index_0 + 56'h1; // @[SpiBufferAvalonDebugger.scala 32:34:@38.8]
-  assign _GEN_0 = Flip ? io_InputBuffer : Buffer_0; // @[SpiBufferAvalonDebugger.scala 27:20:@29.6]
-  assign _GEN_1 = Flip ? _T_78 : Index_0; // @[SpiBufferAvalonDebugger.scala 27:20:@29.6]
-  assign _GEN_2 = Flip ? Buffer_1 : io_InputBuffer; // @[SpiBufferAvalonDebugger.scala 27:20:@29.6]
-  assign _GEN_3 = Flip ? Index_1 : _T_81; // @[SpiBufferAvalonDebugger.scala 27:20:@29.6]
-  assign _T_82 = ~ Flip; // @[SpiBufferAvalonDebugger.scala 34:17:@41.6]
-  assign _GEN_5 = _T_75 ? _GEN_1 : Index_0; // @[SpiBufferAvalonDebugger.scala 26:40:@28.4]
-  assign _GEN_7 = _T_75 ? _GEN_3 : Index_1; // @[SpiBufferAvalonDebugger.scala 26:40:@28.4]
-  assign _GEN_8 = _T_75 ? _T_82 : Flip; // @[SpiBufferAvalonDebugger.scala 26:40:@28.4]
-  assign io_Avalon_readdata = {out_1,out_0}; // @[SpiBufferAvalonDebugger.scala 23:24:@22.4]
-  assign io_Avalon_waitrequest = 1'h0; // @[SpiBufferAvalonDebugger.scala 24:27:@23.4]
+  assign mem__T_33_addr = mem__T_33_addr_pipe_0;
+  assign mem__T_33_data = mem[mem__T_33_addr]; // @[SpiBufferAvalonDebugger.scala 15:26:@8.4]
+  assign mem__T_43_data = {{1'd0}, FlipNext};
+  assign mem__T_43_addr = 7'h0;
+  assign mem__T_43_mask = 1'h1;
+  assign mem__T_43_en = waitRequest;
+  assign mem__T_50_data = io_InputBuffer;
+  assign mem__T_50_addr = Flip;
+  assign mem__T_50_mask = 1'h1;
+  assign mem__T_50_en = waitRequest ? 1'h0 : _T_49;
+  assign _GEN_1 = io_Avalon_read; // @[SpiBufferAvalonDebugger.scala 20:35:@14.4]
+  assign _T_36 = Flip + 7'h1; // @[SpiBufferAvalonDebugger.scala 25:20:@23.4]
+  assign _T_37 = Flip + 7'h1; // @[SpiBufferAvalonDebugger.scala 25:20:@24.4]
+  assign _T_39 = _T_37 == 7'h0; // @[SpiBufferAvalonDebugger.scala 26:28:@26.4]
+  assign FlipNext = _T_39 ? 7'h1 : _T_37; // @[SpiBufferAvalonDebugger.scala 26:20:@27.4]
+  assign _T_48 = _T_46 == 1'h0; // @[SpiBufferAvalonDebugger.scala 8:36:@38.6]
+  assign _T_49 = io_BufferChanged & _T_48; // @[SpiBufferAvalonDebugger.scala 8:33:@39.6]
+  assign _GEN_9 = _T_49 ? 1'h1 : waitRequest; // @[SpiBufferAvalonDebugger.scala 33:44:@40.6]
+  assign _GEN_15 = waitRequest ? FlipNext : Flip; // @[SpiBufferAvalonDebugger.scala 28:23:@29.4]
+  assign _GEN_16 = waitRequest ? 1'h0 : _GEN_9; // @[SpiBufferAvalonDebugger.scala 28:23:@29.4]
+  assign io_Avalon_readdata = {{56'd0}, mem__T_33_data}; // @[SpiBufferAvalonDebugger.scala 20:24:@20.4]
+  assign io_Avalon_waitrequest = waitRequest; // @[SpiBufferAvalonDebugger.scala 21:27:@21.4]
 `ifdef RANDOMIZE_GARBAGE_ASSIGN
 `define RANDOMIZE
 `endif
@@ -82,68 +86,61 @@ module SpiBufferAvalonDebugger( // @[:@3.2]
     `ifndef VERILATOR
       #0.002 begin end
     `endif
-  `ifdef RANDOMIZE_REG_INIT
   _RAND_0 = {1{`RANDOM}};
-  Buffer_0 = _RAND_0[7:0];
-  `endif // RANDOMIZE_REG_INIT
+  `ifdef RANDOMIZE_MEM_INIT
+  for (initvar = 0; initvar < 128; initvar = initvar+1)
+    mem[initvar] = _RAND_0[7:0];
+  `endif // RANDOMIZE_MEM_INIT
   `ifdef RANDOMIZE_REG_INIT
   _RAND_1 = {1{`RANDOM}};
-  Buffer_1 = _RAND_1[7:0];
+  Flip = _RAND_1[6:0];
   `endif // RANDOMIZE_REG_INIT
   `ifdef RANDOMIZE_REG_INIT
-  _RAND_2 = {2{`RANDOM}};
-  Index_0 = _RAND_2[55:0];
+  _RAND_2 = {1{`RANDOM}};
+  waitRequest = _RAND_2[0:0];
   `endif // RANDOMIZE_REG_INIT
   `ifdef RANDOMIZE_REG_INIT
-  _RAND_3 = {2{`RANDOM}};
-  Index_1 = _RAND_3[55:0];
+  _RAND_3 = {1{`RANDOM}};
+  _T_46 = _RAND_3[0:0];
   `endif // RANDOMIZE_REG_INIT
   `ifdef RANDOMIZE_REG_INIT
   _RAND_4 = {1{`RANDOM}};
-  Flip = _RAND_4[0:0];
-  `endif // RANDOMIZE_REG_INIT
-  `ifdef RANDOMIZE_REG_INIT
-  _RAND_5 = {1{`RANDOM}};
-  _T_72 = _RAND_5[0:0];
+  mem__T_33_addr_pipe_0 = _RAND_4[6:0];
   `endif // RANDOMIZE_REG_INIT
   end
 `endif // RANDOMIZE
   always @(posedge clock) begin
-    if (_T_75) begin
-      if (Flip) begin
-        Buffer_0 <= io_InputBuffer;
-      end
+    if(mem__T_43_en & mem__T_43_mask) begin
+      mem[mem__T_43_addr] <= mem__T_43_data; // @[SpiBufferAvalonDebugger.scala 15:26:@8.4]
     end
-    if (_T_75) begin
-      if (!(Flip)) begin
-        Buffer_1 <= io_InputBuffer;
-      end
+    if(mem__T_50_en & mem__T_50_mask) begin
+      mem[mem__T_50_addr] <= mem__T_50_data; // @[SpiBufferAvalonDebugger.scala 15:26:@8.4]
     end
     if (reset) begin
-      Index_0 <= 56'hffffffffffffff;
+      Flip <= 7'h0;
     end else begin
-      if (_T_75) begin
-        if (Flip) begin
-          Index_0 <= _T_78;
+      if (waitRequest) begin
+        if (_T_39) begin
+          Flip <= 7'h1;
+        end else begin
+          Flip <= _T_37;
         end
       end
     end
     if (reset) begin
-      Index_1 <= 56'hffffffffffffff;
+      waitRequest <= 1'h1;
     end else begin
-      if (_T_75) begin
-        if (!(Flip)) begin
-          Index_1 <= _T_81;
+      if (waitRequest) begin
+        waitRequest <= 1'h0;
+      end else begin
+        if (_T_49) begin
+          waitRequest <= 1'h1;
         end
       end
     end
-    if (reset) begin
-      Flip <= 1'h1;
-    end else begin
-      if (_T_75) begin
-        Flip <= _T_82;
-      end
+    _T_46 <= io_BufferChanged;
+    if (_GEN_1) begin
+      mem__T_33_addr_pipe_0 <= io_Avalon_address;
     end
-    _T_72 <= io_BufferChanged;
   end
 endmodule

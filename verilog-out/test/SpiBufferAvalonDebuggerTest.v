@@ -1,3 +1,6 @@
+// This doesn't work.
+// No plan to work for this.
+
 `timescale 1ns/1ns
 module SpiBufferAvalonDebuggerTest();
     reg DI;
@@ -10,14 +13,15 @@ module SpiBufferAvalonDebuggerTest();
 
     integer i;
 
-    reg address;
+    reg [10:0] address;
+    reg avalon_read;
     wire [63:0] result;
 
     reg dbg_clk;
     reg rst;
 
     SpiBuffer sb(.DI(DI), .CS(CS), .CLK(CLK), .Buffer(outDat), .Changed(outSucc));
-    SpiBufferAvalonDebugger dbg(.clock(dbg_clk), .reset(rst), .io_InputBuffer(outDat), .io_BufferChanged(outSucc), .io_Avalon_address(address), .io_Avalon_read(1), .io_Avalon_readdata(result));
+    SpiBufferAvalonDebugger dbg(.clock(dbg_clk), .reset(rst), .io_InputBuffer(outDat), .io_BufferChanged(outSucc), .io_Avalon_address(address), .io_Avalon_read(avalon_read), .io_Avalon_readdata(result));
 
     task doClock;
         begin
@@ -41,11 +45,22 @@ module SpiBufferAvalonDebuggerTest();
 
     task doCheck;
         begin
+            avalon_read = 1;
             address = 0;
             dbg_clk = 0;
             #1 dbg_clk = 1;
             #1 address = 1;
             dbg_clk = 0;
+            #1 dbg_clk = 1;
+            #1 address = 2;
+            dbg_clk = 0;
+            #1 dbg_clk = 1;
+            #1 address = 3;
+            dbg_clk = 0;
+            #1 dbg_clk = 1;
+            #1 address = 4;
+            dbg_clk = 0;
+            avalon_read = 0;
             #1 dbg_clk = 1;
         end
     endtask
