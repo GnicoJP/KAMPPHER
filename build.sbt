@@ -1,5 +1,5 @@
 // See README.md for license details.
-lazy val compileSpiReceiver = inputKey[Unit]("Compile spi.SpiReceiver")
+lazy val compileSpiSlave = inputKey[Unit]("Compile spi.SpiSlaveReceiver")
 
 def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
   Seq() ++ {
@@ -54,7 +54,6 @@ scalacOptions ++= scalacOptionsVersion(scalaVersion.value)
 
 javacOptions ++= javacOptionsVersion(scalaVersion.value)
 
-
-compileSpiReceiver := { 
-  (run in Compile).toTask(" spi.SpiRunner --target-dir ./verilog-out").value
+compileSpiSlave := { 
+  (run in Compile).toTask(" spi.runners.SpiSlaveRunner --target-dir ./verilog-out").value
 }
