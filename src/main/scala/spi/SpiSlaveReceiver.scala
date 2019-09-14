@@ -13,7 +13,7 @@ class SpiSlaveReceiver extends Module {
     val io = IO(new Bundle{
         val InputBuffer = Input(UInt(8.W))
         val BufferChanged = Input(Bool())
-        val DataBlockSize = Input(UInt(8.W))
+        val DataBlockSize = Input(UInt(32.W))
         val CommandReadFinished = Output(Bool())
         val ArgumentReadFinished = Output(Bool())
         val ReadSuccess = Output(Bool())
@@ -36,7 +36,7 @@ class SpiSlaveReceiver extends Module {
     val commandVecAsUInt = Wire(UInt(6.W))
     commandVecAsUInt := commandVec.asUInt
 
-    val counter = Reg(UInt(12.W))
+    val counter = Reg(UInt(32.W))
 
     io.Command := commandVecAsUInt
     io.CommandArgument := commandArgumentVec.asUInt
