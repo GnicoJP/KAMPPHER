@@ -3,7 +3,7 @@ module SpiSlaveReceiver( // @[:@3.2]
   input         reset, // @[:@5.4]
   input  [7:0]  io_InputBuffer, // @[:@6.4]
   input         io_BufferChanged, // @[:@6.4]
-  input  [7:0]  io_DataBlockSize, // @[:@6.4]
+  input  [31:0] io_DataBlockSize, // @[:@6.4]
   output        io_CommandReadFinished, // @[:@6.4]
   output        io_ArgumentReadFinished, // @[:@6.4]
   output        io_ReadSuccess, // @[:@6.4]
@@ -98,7 +98,7 @@ module SpiSlaveReceiver( // @[:@3.2]
   wire [2:0] _T_90; // @[SpiSlaveReceiver.scala 37:36:@18.4]
   wire [2:0] _T_92; // @[SpiSlaveReceiver.scala 37:36:@20.4]
   wire [5:0] commandVecAsUInt; // @[SpiSlaveReceiver.scala 37:36:@21.4]
-  reg [11:0] counter; // @[SpiSlaveReceiver.scala 39:22:@23.4]
+  reg [31:0] counter; // @[SpiSlaveReceiver.scala 39:22:@23.4]
   reg [31:0] _RAND_42;
   wire [7:0] _T_101; // @[SpiSlaveReceiver.scala 42:46:@31.4]
   wire [15:0] _T_109; // @[SpiSlaveReceiver.scala 42:46:@39.4]
@@ -129,7 +129,7 @@ module SpiSlaveReceiver( // @[:@3.2]
   wire  _GEN_4; // @[SpiSlaveReceiver.scala 52:85:@78.8]
   wire  _GEN_5; // @[SpiSlaveReceiver.scala 52:85:@78.8]
   wire  _GEN_6; // @[SpiSlaveReceiver.scala 52:85:@78.8]
-  wire [11:0] _GEN_7; // @[SpiSlaveReceiver.scala 52:85:@78.8]
+  wire [31:0] _GEN_7; // @[SpiSlaveReceiver.scala 52:85:@78.8]
   wire  _T_164; // @[Conditional.scala 37:30:@96.8]
   wire  _T_166; // @[Conditional.scala 37:30:@98.10]
   wire  _T_176; // @[Conditional.scala 37:30:@118.12]
@@ -219,8 +219,8 @@ module SpiSlaveReceiver( // @[:@3.2]
   wire  _GEN_89; // @[Conditional.scala 40:58:@99.10]
   wire  _GEN_90; // @[Conditional.scala 40:58:@99.10]
   wire [1:0] _GEN_91; // @[Conditional.scala 40:58:@99.10]
-  wire [12:0] _T_206; // @[SpiSlaveReceiver.scala 79:36:@178.10]
-  wire [11:0] _T_207; // @[SpiSlaveReceiver.scala 79:36:@179.10]
+  wire [32:0] _T_206; // @[SpiSlaveReceiver.scala 79:36:@178.10]
+  wire [31:0] _T_207; // @[SpiSlaveReceiver.scala 79:36:@179.10]
   wire  _T_208; // @[Conditional.scala 37:30:@183.10]
   wire  _T_219; // @[SpiSlaveReceiver.scala 85:39:@200.12]
   wire  _T_222; // @[SpiSlaveReceiver.scala 88:45:@206.14]
@@ -231,44 +231,43 @@ module SpiSlaveReceiver( // @[:@3.2]
   wire  _T_225; // @[Conditional.scala 37:30:@218.12]
   wire  _T_226; // @[Conditional.scala 37:30:@220.14]
   wire  _T_228; // @[SpiSlaveReceiver.scala 101:49:@223.18]
-  wire [11:0] _GEN_96; // @[SpiSlaveReceiver.scala 101:61:@224.18]
+  wire [31:0] _GEN_96; // @[SpiSlaveReceiver.scala 101:61:@224.18]
   wire [1:0] _GEN_97; // @[SpiSlaveReceiver.scala 101:61:@224.18]
   wire  _T_232; // @[SpiSlaveReceiver.scala 107:49:@231.18]
   wire  _T_234; // @[SpiSlaveReceiver.scala 109:55:@236.20]
   wire [1:0] _GEN_98; // @[SpiSlaveReceiver.scala 109:67:@237.20]
   wire [1:0] _GEN_99; // @[SpiSlaveReceiver.scala 107:61:@232.18]
   wire [1:0] _GEN_100; // @[SpiSlaveReceiver.scala 107:61:@232.18]
-  wire [11:0] _GEN_101; // @[SpiSlaveReceiver.scala 100:51:@222.16]
+  wire [31:0] _GEN_101; // @[SpiSlaveReceiver.scala 100:51:@222.16]
   wire [1:0] _GEN_102; // @[SpiSlaveReceiver.scala 100:51:@222.16]
   wire [1:0] _GEN_103; // @[SpiSlaveReceiver.scala 100:51:@222.16]
   wire  _T_235; // @[Conditional.scala 37:30:@243.16]
-  wire [11:0] _GEN_273; // @[SpiSlaveReceiver.scala 115:38:@245.18]
   wire  _T_236; // @[SpiSlaveReceiver.scala 115:38:@245.18]
-  wire [11:0] _GEN_104; // @[SpiSlaveReceiver.scala 116:25:@246.18]
+  wire [31:0] _GEN_104; // @[SpiSlaveReceiver.scala 116:25:@246.18]
   wire [1:0] _GEN_105; // @[SpiSlaveReceiver.scala 116:25:@246.18]
   wire  _T_241; // @[Conditional.scala 37:30:@257.18]
   wire  _T_243; // @[SpiSlaveReceiver.scala 124:38:@259.20]
   wire [1:0] _T_245; // @[SpiSlaveReceiver.scala 127:41:@263.22]
-  wire [11:0] _GEN_106; // @[SpiSlaveReceiver.scala 124:47:@260.20]
+  wire [31:0] _GEN_106; // @[SpiSlaveReceiver.scala 124:47:@260.20]
   wire [1:0] _GEN_107; // @[SpiSlaveReceiver.scala 124:47:@260.20]
   wire [1:0] _GEN_108; // @[SpiSlaveReceiver.scala 124:47:@260.20]
-  wire [11:0] _GEN_109; // @[Conditional.scala 39:67:@258.18]
+  wire [31:0] _GEN_109; // @[Conditional.scala 39:67:@258.18]
   wire [1:0] _GEN_110; // @[Conditional.scala 39:67:@258.18]
   wire [1:0] _GEN_111; // @[Conditional.scala 39:67:@258.18]
-  wire [11:0] _GEN_112; // @[Conditional.scala 39:67:@244.16]
+  wire [31:0] _GEN_112; // @[Conditional.scala 39:67:@244.16]
   wire [1:0] _GEN_113; // @[Conditional.scala 39:67:@244.16]
   wire [1:0] _GEN_114; // @[Conditional.scala 39:67:@244.16]
-  wire [11:0] _GEN_115; // @[Conditional.scala 40:58:@221.14]
+  wire [31:0] _GEN_115; // @[Conditional.scala 40:58:@221.14]
   wire [1:0] _GEN_116; // @[Conditional.scala 40:58:@221.14]
   wire [1:0] _GEN_117; // @[Conditional.scala 40:58:@221.14]
-  wire [11:0] _GEN_118; // @[Conditional.scala 39:67:@219.12]
+  wire [31:0] _GEN_118; // @[Conditional.scala 39:67:@219.12]
   wire [1:0] _GEN_119; // @[Conditional.scala 39:67:@219.12]
   wire [1:0] _GEN_120; // @[Conditional.scala 39:67:@219.12]
   wire  _GEN_121; // @[Conditional.scala 39:67:@184.10]
   wire [1:0] _GEN_128; // @[Conditional.scala 39:67:@184.10]
   wire  _GEN_129; // @[Conditional.scala 39:67:@184.10]
   wire [1:0] _GEN_130; // @[Conditional.scala 39:67:@184.10]
-  wire [11:0] _GEN_131; // @[Conditional.scala 39:67:@184.10]
+  wire [31:0] _GEN_131; // @[Conditional.scala 39:67:@184.10]
   wire  _GEN_132; // @[Conditional.scala 39:67:@97.8]
   wire  _GEN_133; // @[Conditional.scala 39:67:@97.8]
   wire  _GEN_134; // @[Conditional.scala 39:67:@97.8]
@@ -302,7 +301,7 @@ module SpiSlaveReceiver( // @[:@3.2]
   wire  _GEN_162; // @[Conditional.scala 39:67:@97.8]
   wire  _GEN_163; // @[Conditional.scala 39:67:@97.8]
   wire [1:0] _GEN_164; // @[Conditional.scala 39:67:@97.8]
-  wire [11:0] _GEN_165; // @[Conditional.scala 39:67:@97.8]
+  wire [31:0] _GEN_165; // @[Conditional.scala 39:67:@97.8]
   wire  _GEN_166; // @[Conditional.scala 39:67:@97.8]
   wire  _GEN_173; // @[Conditional.scala 39:67:@97.8]
   wire [1:0] _GEN_174; // @[Conditional.scala 39:67:@97.8]
@@ -314,7 +313,7 @@ module SpiSlaveReceiver( // @[:@3.2]
   wire  _GEN_180; // @[Conditional.scala 40:58:@71.6]
   wire  _GEN_181; // @[Conditional.scala 40:58:@71.6]
   wire  _GEN_182; // @[Conditional.scala 40:58:@71.6]
-  wire [11:0] _GEN_183; // @[Conditional.scala 40:58:@71.6]
+  wire [31:0] _GEN_183; // @[Conditional.scala 40:58:@71.6]
   wire  _GEN_184; // @[Conditional.scala 40:58:@71.6]
   wire  _GEN_185; // @[Conditional.scala 40:58:@71.6]
   wire  _GEN_186; // @[Conditional.scala 40:58:@71.6]
@@ -380,12 +379,12 @@ module SpiSlaveReceiver( // @[:@3.2]
   assign _GEN_4 = _T_144 ? _T_156 : commandVec_3; // @[SpiSlaveReceiver.scala 52:85:@78.8]
   assign _GEN_5 = _T_144 ? _T_159 : commandVec_4; // @[SpiSlaveReceiver.scala 52:85:@78.8]
   assign _GEN_6 = _T_144 ? _T_162 : commandVec_5; // @[SpiSlaveReceiver.scala 52:85:@78.8]
-  assign _GEN_7 = _T_144 ? 12'h0 : counter; // @[SpiSlaveReceiver.scala 52:85:@78.8]
+  assign _GEN_7 = _T_144 ? 32'h0 : counter; // @[SpiSlaveReceiver.scala 52:85:@78.8]
   assign _T_164 = 2'h1 == state; // @[Conditional.scala 37:30:@96.8]
-  assign _T_166 = 12'h0 == counter; // @[Conditional.scala 37:30:@98.10]
-  assign _T_176 = 12'h1 == counter; // @[Conditional.scala 37:30:@118.12]
-  assign _T_186 = 12'h2 == counter; // @[Conditional.scala 37:30:@138.14]
-  assign _T_196 = 12'h3 == counter; // @[Conditional.scala 37:30:@158.16]
+  assign _T_166 = 32'h0 == counter; // @[Conditional.scala 37:30:@98.10]
+  assign _T_176 = 32'h1 == counter; // @[Conditional.scala 37:30:@118.12]
+  assign _T_186 = 32'h2 == counter; // @[Conditional.scala 37:30:@138.14]
+  assign _T_196 = 32'h3 == counter; // @[Conditional.scala 37:30:@158.16]
   assign _GEN_8 = _T_196 ? _T_147 : commandArgumentVec_0; // @[Conditional.scala 39:67:@159.16]
   assign _GEN_9 = _T_196 ? _T_150 : commandArgumentVec_1; // @[Conditional.scala 39:67:@159.16]
   assign _GEN_10 = _T_196 ? _T_153 : commandArgumentVec_2; // @[Conditional.scala 39:67:@159.16]
@@ -470,8 +469,8 @@ module SpiSlaveReceiver( // @[:@3.2]
   assign _GEN_89 = _T_166 ? commandArgumentVec_6 : _GEN_56; // @[Conditional.scala 40:58:@99.10]
   assign _GEN_90 = _T_166 ? commandArgumentVec_7 : _GEN_57; // @[Conditional.scala 40:58:@99.10]
   assign _GEN_91 = _T_166 ? state : _GEN_58; // @[Conditional.scala 40:58:@99.10]
-  assign _T_206 = counter + 12'h1; // @[SpiSlaveReceiver.scala 79:36:@178.10]
-  assign _T_207 = counter + 12'h1; // @[SpiSlaveReceiver.scala 79:36:@179.10]
+  assign _T_206 = counter + 32'h1; // @[SpiSlaveReceiver.scala 79:36:@178.10]
+  assign _T_207 = counter + 32'h1; // @[SpiSlaveReceiver.scala 79:36:@179.10]
   assign _T_208 = 2'h2 == state; // @[Conditional.scala 37:30:@183.10]
   assign _T_219 = commandVecAsUInt == 6'h18; // @[SpiSlaveReceiver.scala 85:39:@200.12]
   assign _T_222 = commandVecAsUInt == 6'h19; // @[SpiSlaveReceiver.scala 88:45:@206.14]
@@ -482,25 +481,24 @@ module SpiSlaveReceiver( // @[:@3.2]
   assign _T_225 = 2'h3 == state; // @[Conditional.scala 37:30:@218.12]
   assign _T_226 = 2'h0 == writestate; // @[Conditional.scala 37:30:@220.14]
   assign _T_228 = io_InputBuffer == 8'hfe; // @[SpiSlaveReceiver.scala 101:49:@223.18]
-  assign _GEN_96 = _T_228 ? 12'h1 : counter; // @[SpiSlaveReceiver.scala 101:61:@224.18]
+  assign _GEN_96 = _T_228 ? 32'h1 : counter; // @[SpiSlaveReceiver.scala 101:61:@224.18]
   assign _GEN_97 = _T_228 ? 2'h1 : writestate; // @[SpiSlaveReceiver.scala 101:61:@224.18]
   assign _T_232 = io_InputBuffer == 8'hfc; // @[SpiSlaveReceiver.scala 107:49:@231.18]
   assign _T_234 = io_InputBuffer == 8'hfd; // @[SpiSlaveReceiver.scala 109:55:@236.20]
   assign _GEN_98 = _T_234 ? 2'h0 : state; // @[SpiSlaveReceiver.scala 109:67:@237.20]
   assign _GEN_99 = _T_232 ? 2'h1 : writestate; // @[SpiSlaveReceiver.scala 107:61:@232.18]
   assign _GEN_100 = _T_232 ? state : _GEN_98; // @[SpiSlaveReceiver.scala 107:61:@232.18]
-  assign _GEN_101 = writestate_isSingle ? _GEN_96 : 12'h1; // @[SpiSlaveReceiver.scala 100:51:@222.16]
+  assign _GEN_101 = writestate_isSingle ? _GEN_96 : 32'h1; // @[SpiSlaveReceiver.scala 100:51:@222.16]
   assign _GEN_102 = writestate_isSingle ? _GEN_97 : _GEN_99; // @[SpiSlaveReceiver.scala 100:51:@222.16]
   assign _GEN_103 = writestate_isSingle ? state : _GEN_100; // @[SpiSlaveReceiver.scala 100:51:@222.16]
   assign _T_235 = 2'h1 == writestate; // @[Conditional.scala 37:30:@243.16]
-  assign _GEN_273 = {{4'd0}, io_DataBlockSize}; // @[SpiSlaveReceiver.scala 115:38:@245.18]
-  assign _T_236 = counter == _GEN_273; // @[SpiSlaveReceiver.scala 115:38:@245.18]
-  assign _GEN_104 = _T_236 ? 12'h1 : _T_207; // @[SpiSlaveReceiver.scala 116:25:@246.18]
+  assign _T_236 = counter == io_DataBlockSize; // @[SpiSlaveReceiver.scala 115:38:@245.18]
+  assign _GEN_104 = _T_236 ? 32'h1 : _T_207; // @[SpiSlaveReceiver.scala 116:25:@246.18]
   assign _GEN_105 = _T_236 ? 2'h2 : writestate; // @[SpiSlaveReceiver.scala 116:25:@246.18]
   assign _T_241 = 2'h2 == writestate; // @[Conditional.scala 37:30:@257.18]
-  assign _T_243 = counter == 12'h2; // @[SpiSlaveReceiver.scala 124:38:@259.20]
+  assign _T_243 = counter == 32'h2; // @[SpiSlaveReceiver.scala 124:38:@259.20]
   assign _T_245 = writestate_isSingle ? 2'h0 : 2'h3; // @[SpiSlaveReceiver.scala 127:41:@263.22]
-  assign _GEN_106 = _T_243 ? 12'h0 : _T_207; // @[SpiSlaveReceiver.scala 124:47:@260.20]
+  assign _GEN_106 = _T_243 ? 32'h0 : _T_207; // @[SpiSlaveReceiver.scala 124:47:@260.20]
   assign _GEN_107 = _T_243 ? 2'h0 : writestate; // @[SpiSlaveReceiver.scala 124:47:@260.20]
   assign _GEN_108 = _T_243 ? _T_245 : state; // @[SpiSlaveReceiver.scala 124:47:@260.20]
   assign _GEN_109 = _T_241 ? _GEN_106 : counter; // @[Conditional.scala 39:67:@258.18]
@@ -803,7 +801,7 @@ module SpiSlaveReceiver( // @[:@3.2]
   `endif // RANDOMIZE_REG_INIT
   `ifdef RANDOMIZE_REG_INIT
   _RAND_42 = {1{`RANDOM}};
-  counter = _RAND_42[11:0];
+  counter = _RAND_42[31:0];
   `endif // RANDOMIZE_REG_INIT
   `ifdef RANDOMIZE_REG_INIT
   _RAND_43 = {1{`RANDOM}};
@@ -1375,7 +1373,7 @@ module SpiSlaveReceiver( // @[:@3.2]
     if (_T_135) begin
       if (_T_136) begin
         if (_T_144) begin
-          counter <= 12'h0;
+          counter <= 32'h0;
         end
       end else begin
         if (_T_164) begin
@@ -1386,22 +1384,22 @@ module SpiSlaveReceiver( // @[:@3.2]
               if (_T_226) begin
                 if (writestate_isSingle) begin
                   if (_T_228) begin
-                    counter <= 12'h1;
+                    counter <= 32'h1;
                   end
                 end else begin
-                  counter <= 12'h1;
+                  counter <= 32'h1;
                 end
               end else begin
                 if (_T_235) begin
                   if (_T_236) begin
-                    counter <= 12'h1;
+                    counter <= 32'h1;
                   end else begin
                     counter <= _T_207;
                   end
                 end else begin
                   if (_T_241) begin
                     if (_T_243) begin
-                      counter <= 12'h0;
+                      counter <= 32'h0;
                     end else begin
                       counter <= _T_207;
                     end
