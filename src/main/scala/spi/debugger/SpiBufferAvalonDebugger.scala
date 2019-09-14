@@ -17,7 +17,7 @@ class SpiBufferAvalonDebugger extends Module {
     val FlipNext = Wire(UInt(7.W))
     val waitRequest = RegInit(true.B)
 
-    io.Avalon.readdata := mem.read(io.Avalon.address, io.Avalon.read)
+    io.Avalon.readdata := Mux(waitRequest, 0.U, mem.read(io.Avalon.address, io.Avalon.read))
     io.Avalon.waitrequest := waitRequest
 
 
