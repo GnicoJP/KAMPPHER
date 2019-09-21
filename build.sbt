@@ -1,6 +1,7 @@
 // See README.md for license details.
 lazy val compileSpiSlave = inputKey[Unit]("Compile Slave")
 lazy val compileSpiController = inputKey[Unit]("Compile Controller")
+lazy val compileSpiBuffer = inputKey[Unit]("Compile Buffer")
 
 def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
   Seq() ++ {
@@ -61,4 +62,8 @@ compileSpiSlave := {
 
 compileSpiController := {
   (run in Compile).toTask(" Controller --target-dir ./verilog-out").value
+}
+
+compileSpiBuffer := {
+  (run in Compile).toTask(" Buffer --target-dir ./verilog-out").value
 }

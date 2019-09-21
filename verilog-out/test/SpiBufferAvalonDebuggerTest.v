@@ -13,7 +13,7 @@ module SpiBufferAvalonDebuggerTest();
 
     integer i;
 
-    reg [10:0] address;
+    reg [6:0] address;
     reg avalon_read;
     wire [63:0] result;
 
@@ -27,10 +27,10 @@ module SpiBufferAvalonDebuggerTest();
         begin
             #1 CLK = 0;
             dbg_clk = 0;
+            #1 dbg_clk = 1;
             #1 CLK = 1;
-            dbg_clk = 1;
-            #2 CLK = 0;
             dbg_clk = 0;
+            #1 dbg_clk = 1;
         end
     endtask
 
@@ -43,31 +43,10 @@ module SpiBufferAvalonDebuggerTest();
         end
     endtask
 
-    task doCheck;
-        begin
-            avalon_read = 1;
-            address = 0;
-            dbg_clk = 0;
-            #1 dbg_clk = 1;
-            #1 address = 1;
-            dbg_clk = 0;
-            #1 dbg_clk = 1;
-            #1 address = 2;
-            dbg_clk = 0;
-            #1 dbg_clk = 1;
-            #1 address = 3;
-            dbg_clk = 0;
-            #1 dbg_clk = 1;
-            #1 address = 4;
-            dbg_clk = 0;
-            avalon_read = 0;
-            #1 dbg_clk = 1;
-        end
-    endtask
-
     initial begin
         rst = 1;
         dbg_clk = 0;
+        address = 0;
         #1 dbg_clk = 1;
         #1 rst = 0;
         doClock();
@@ -81,20 +60,21 @@ module SpiBufferAvalonDebuggerTest();
         CS = 0;
         inDat = 122;
         doWrite();
-        doCheck();
         inDat = 128;
         doWrite();
-        doCheck();
         CS = 1;
         doClock();
         doClock();
         CS = 0;
         inDat = 12;
         doWrite();
-        doCheck();
         inDat = 64;
         doWrite();
-        doCheck();
         doClock();
+
+        for(i = 0; i < 10; i = i + 1) begin
+            address = i;
+            doClock();
+        end
     end
 endmodule

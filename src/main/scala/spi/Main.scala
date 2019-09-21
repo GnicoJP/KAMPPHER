@@ -9,7 +9,6 @@ object SpiSlaveRunner extends App {
             args(i).toLowerCase() match {
                 case "slave" =>
                         chisel3.Driver.execute(args, () => new spi.SpiSlaveReceiver())
-                        chisel3.Driver.execute(args, () => new spi.debugger.SpiBufferAvalonDebugger())
                         chisel3.Driver.execute(args, () => new spi.debugger.SpiSlaveReceiverLedDebugger())
                         chisel3.Driver.execute(args, () => new spi.debugger.SpiSlaveReceiverLedDebugger2())
                 case "controller" => 
