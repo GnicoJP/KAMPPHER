@@ -1,6 +1,3 @@
-// This doesn't work.
-// No plan to work for this.
-
 `timescale 1ns/1ns
 module SpiBufferAvalonDebuggerTest();
     reg DI;
