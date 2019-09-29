@@ -1,7 +1,7 @@
 module SpiSlaveReceiverAvalonDebugger(
   input         clock,
   input         reset,
-  input  [6:0]  io_Avalon_address,
+  input  [5:0]  io_Avalon_address,
   input         io_Avalon_read,
   output [63:0] io_Avalon_readdata,
   input         io_Avalon_write,
@@ -13,7 +13,7 @@ module SpiSlaveReceiverAvalonDebugger(
 );
 reg [37:0] mem [0:63];
 reg waitrequest;
-reg [2:0] bufferchanged_history;
+reg bufferchanged_history;
 
 wire [5:0] itr;
 wire [5:0] mem0_next_inner;
@@ -29,11 +29,10 @@ assign mem0_next =  mem0_next_inner == 7'b0 ? 38'b1 : {31'b0, mem0_next_inner};
 always @(posedge(clock)) begin
     if(reset) begin
         mem[0] = 38'b1;
-        bufferchanged_history = 3'b111;
+        bufferchanged_history = 1'b1;
         waitrequest = 1'b0;
     end else begin
-        bufferchanged_history = {bufferchanged_history[1:0], io_BufferChanged};
-        if(bufferchanged_history == 3'b011) begin
+        if(~bufferchanged_history & io_ReadSuccess) begin
             $display("RAISE itr[%b]", itr);
             waitrequest = 1'b1;
             mem[itr] <= {io_Command, io_CommandArgument};
@@ -44,6 +43,7 @@ always @(posedge(clock)) begin
             waitrequest = 1'b0;
             $display("FALL itr[%b]", itr);
         end
+        bufferchanged_history = io_ReadSuccess;
     end
 end
 
