@@ -43,7 +43,7 @@ always @(posedge(clock)) begin
             waitrequest = 1'b0;
             $display("FALL itr[%b]", itr);
         end
-        bufferchanged_history = io_ReadSuccess;
+        bufferchanged_history <= io_ReadSuccess;
     end
 end
 

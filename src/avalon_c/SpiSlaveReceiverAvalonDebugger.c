@@ -31,10 +31,10 @@ void output(uint64_t value, uint64_t * counter) {
     printf("CMD%u|", CMD);
     switch(CMD) {
         case 17: case 18: case 24: case 25:
-            printf("BLOCK ADDRESS:%x", args);
+            printf("BLOCK ADDRESS:%x\n", args);
             break;
         case 16:
-            printf("BLOCK SIZE:%x", args);
+            printf("BLOCK SIZE:%x\n", args);
             break;
         default:
             binout32(value);
