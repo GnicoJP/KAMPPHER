@@ -21,7 +21,7 @@ module SpiBuffer(
    always @(posedge CLK) begin
        if (CS) begin
            counter <= 1;
-           inner_buffer = 8'b11111111;
+           inner_buffer <= 8'b11111111;
            outer_buffer <= 8'b11111111;
            changed <= 0;
            state <= 0;
@@ -30,7 +30,7 @@ module SpiBuffer(
             if(state) begin
                 if (counter == 3'b111) begin
                     changed <= 1;
-                    outer_buffer <= next_buffer;
+                    outer_buffer = next_buffer;
                 end
                 else if (counter == 3'b100) begin
                     changed <= 0;
