@@ -1,612 +1,194 @@
-module SpiSlaveReceiver( // @[:@3.2]
-  input         clock, // @[:@4.4]
-  input         reset, // @[:@5.4]
-  input  [7:0]  io_InputBuffer, // @[:@6.4]
-  input         io_BufferChanged, // @[:@6.4]
-  input  [31:0] io_DataBlockSize, // @[:@6.4]
-  output        io_CommandReadFinished, // @[:@6.4]
-  output        io_ArgumentReadFinished, // @[:@6.4]
-  output        io_ReadSuccess, // @[:@6.4]
-  output [5:0]  io_Command, // @[:@6.4]
-  output [31:0] io_CommandArgument, // @[:@6.4]
-  output [2:0]  io____state // @[:@6.4]
+module SpiSlaveReceiver(
+  input         clock,
+  input         reset,
+  input  [7:0]  io_InputBuffer,
+  input         io_BufferChanged,
+  input  [31:0] io_DataBlockSize,
+  output        io_CommandReadFinished,
+  output        io_ArgumentReadFinished,
+  output        io_ReadSuccess,
+  output [5:0]  io_Command,
+  output [31:0] io_CommandArgument,
+  output [2:0]  io____state
 );
-  reg  writestate_isSingle; // @[SpiSlaveReceiver.scala 26:34:@8.4]
+  reg  writestate_isSingle; // @[SpiSlaveReceiver.scala 26:34]
   reg [31:0] _RAND_0;
-  reg [1:0] state; // @[SpiSlaveReceiver.scala 27:24:@9.4]
+  reg [1:0] state; // @[SpiSlaveReceiver.scala 27:24]
   reg [31:0] _RAND_1;
-  reg [1:0] writestate; // @[SpiSlaveReceiver.scala 28:29:@10.4]
+  reg [1:0] writestate; // @[SpiSlaveReceiver.scala 28:29]
   reg [31:0] _RAND_2;
-  reg  readSuccess; // @[SpiSlaveReceiver.scala 32:30:@13.4]
+  reg  readSuccess; // @[SpiSlaveReceiver.scala 32:30]
   reg [31:0] _RAND_3;
-  reg  commandVec_0; // @[SpiSlaveReceiver.scala 34:25:@14.4]
+  reg  commandVec_0; // @[SpiSlaveReceiver.scala 34:25]
   reg [31:0] _RAND_4;
-  reg  commandVec_1; // @[SpiSlaveReceiver.scala 34:25:@14.4]
+  reg  commandVec_1; // @[SpiSlaveReceiver.scala 34:25]
   reg [31:0] _RAND_5;
-  reg  commandVec_2; // @[SpiSlaveReceiver.scala 34:25:@14.4]
+  reg  commandVec_2; // @[SpiSlaveReceiver.scala 34:25]
   reg [31:0] _RAND_6;
-  reg  commandVec_3; // @[SpiSlaveReceiver.scala 34:25:@14.4]
+  reg  commandVec_3; // @[SpiSlaveReceiver.scala 34:25]
   reg [31:0] _RAND_7;
-  reg  commandVec_4; // @[SpiSlaveReceiver.scala 34:25:@14.4]
+  reg  commandVec_4; // @[SpiSlaveReceiver.scala 34:25]
   reg [31:0] _RAND_8;
-  reg  commandVec_5; // @[SpiSlaveReceiver.scala 34:25:@14.4]
+  reg  commandVec_5; // @[SpiSlaveReceiver.scala 34:25]
   reg [31:0] _RAND_9;
-  reg  commandArgumentVec_0; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_0; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_10;
-  reg  commandArgumentVec_1; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_1; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_11;
-  reg  commandArgumentVec_2; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_2; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_12;
-  reg  commandArgumentVec_3; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_3; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_13;
-  reg  commandArgumentVec_4; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_4; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_14;
-  reg  commandArgumentVec_5; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_5; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_15;
-  reg  commandArgumentVec_6; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_6; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_16;
-  reg  commandArgumentVec_7; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_7; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_17;
-  reg  commandArgumentVec_8; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_8; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_18;
-  reg  commandArgumentVec_9; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_9; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_19;
-  reg  commandArgumentVec_10; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_10; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_20;
-  reg  commandArgumentVec_11; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_11; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_21;
-  reg  commandArgumentVec_12; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_12; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_22;
-  reg  commandArgumentVec_13; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_13; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_23;
-  reg  commandArgumentVec_14; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_14; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_24;
-  reg  commandArgumentVec_15; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_15; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_25;
-  reg  commandArgumentVec_16; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_16; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_26;
-  reg  commandArgumentVec_17; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_17; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_27;
-  reg  commandArgumentVec_18; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_18; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_28;
-  reg  commandArgumentVec_19; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_19; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_29;
-  reg  commandArgumentVec_20; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_20; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_30;
-  reg  commandArgumentVec_21; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_21; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_31;
-  reg  commandArgumentVec_22; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_22; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_32;
-  reg  commandArgumentVec_23; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_23; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_33;
-  reg  commandArgumentVec_24; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_24; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_34;
-  reg  commandArgumentVec_25; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_25; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_35;
-  reg  commandArgumentVec_26; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_26; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_36;
-  reg  commandArgumentVec_27; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_27; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_37;
-  reg  commandArgumentVec_28; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_28; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_38;
-  reg  commandArgumentVec_29; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_29; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_39;
-  reg  commandArgumentVec_30; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_30; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_40;
-  reg  commandArgumentVec_31; // @[SpiSlaveReceiver.scala 35:33:@15.4]
+  reg  commandArgumentVec_31; // @[SpiSlaveReceiver.scala 35:33]
   reg [31:0] _RAND_41;
-  wire [2:0] _T_90; // @[SpiSlaveReceiver.scala 37:36:@18.4]
-  wire [2:0] _T_92; // @[SpiSlaveReceiver.scala 37:36:@20.4]
-  wire [5:0] commandVecAsUInt; // @[SpiSlaveReceiver.scala 37:36:@21.4]
-  reg [31:0] counter; // @[SpiSlaveReceiver.scala 39:22:@23.4]
+  wire [2:0] _T_1; // @[SpiSlaveReceiver.scala 37:36]
+  wire [2:0] _T_3; // @[SpiSlaveReceiver.scala 37:36]
+  wire [5:0] commandVecAsUInt; // @[SpiSlaveReceiver.scala 37:36]
+  reg [31:0] counter; // @[SpiSlaveReceiver.scala 39:22]
   reg [31:0] _RAND_42;
-  wire [7:0] _T_101; // @[SpiSlaveReceiver.scala 42:46:@31.4]
-  wire [15:0] _T_109; // @[SpiSlaveReceiver.scala 42:46:@39.4]
-  wire [7:0] _T_116; // @[SpiSlaveReceiver.scala 42:46:@46.4]
-  wire [15:0] _T_124; // @[SpiSlaveReceiver.scala 42:46:@54.4]
-  reg  _T_129; // @[SpiSlaveReceiver.scala 10:27:@62.4]
+  wire [7:0] _T_11; // @[SpiSlaveReceiver.scala 42:46]
+  wire [15:0] _T_19; // @[SpiSlaveReceiver.scala 42:46]
+  wire [7:0] _T_26; // @[SpiSlaveReceiver.scala 42:46]
+  wire [15:0] _T_34; // @[SpiSlaveReceiver.scala 42:46]
+  reg  _T_38; // @[SpiSlaveReceiver.scala 10:27]
   reg [31:0] _RAND_43;
-  wire  _T_130; // @[SpiSlaveReceiver.scala 11:11:@64.4]
-  reg  _T_132; // @[SpiSlaveReceiver.scala 11:30:@65.4]
+  wire  _T_39; // @[SpiSlaveReceiver.scala 11:11]
+  reg  _T_40; // @[SpiSlaveReceiver.scala 11:30]
   reg [31:0] _RAND_44;
-  wire  _T_134; // @[SpiSlaveReceiver.scala 11:22:@67.4]
-  wire  _T_135; // @[SpiSlaveReceiver.scala 11:19:@68.4]
-  wire  _T_136; // @[Conditional.scala 37:30:@70.6]
-  wire  _T_138; // @[SpiSlaveReceiver.scala 52:36:@73.8]
-  wire  _T_140; // @[SpiSlaveReceiver.scala 52:40:@74.8]
-  wire  _T_141; // @[SpiSlaveReceiver.scala 52:69:@75.8]
-  wire  _T_144; // @[SpiSlaveReceiver.scala 52:52:@77.8]
-  wire  _T_147; // @[SpiSlaveReceiver.scala 55:58:@80.10]
-  wire  _T_150; // @[SpiSlaveReceiver.scala 55:58:@82.10]
-  wire  _T_153; // @[SpiSlaveReceiver.scala 55:58:@84.10]
-  wire  _T_156; // @[SpiSlaveReceiver.scala 55:58:@86.10]
-  wire  _T_159; // @[SpiSlaveReceiver.scala 55:58:@88.10]
-  wire  _T_162; // @[SpiSlaveReceiver.scala 55:58:@90.10]
-  wire [1:0] _GEN_0; // @[SpiSlaveReceiver.scala 52:85:@78.8]
-  wire  _GEN_1; // @[SpiSlaveReceiver.scala 52:85:@78.8]
-  wire  _GEN_2; // @[SpiSlaveReceiver.scala 52:85:@78.8]
-  wire  _GEN_3; // @[SpiSlaveReceiver.scala 52:85:@78.8]
-  wire  _GEN_4; // @[SpiSlaveReceiver.scala 52:85:@78.8]
-  wire  _GEN_5; // @[SpiSlaveReceiver.scala 52:85:@78.8]
-  wire  _GEN_6; // @[SpiSlaveReceiver.scala 52:85:@78.8]
-  wire [31:0] _GEN_7; // @[SpiSlaveReceiver.scala 52:85:@78.8]
-  wire  _T_164; // @[Conditional.scala 37:30:@96.8]
-  wire  _T_166; // @[Conditional.scala 37:30:@98.10]
-  wire  _T_176; // @[Conditional.scala 37:30:@118.12]
-  wire  _T_186; // @[Conditional.scala 37:30:@138.14]
-  wire  _T_196; // @[Conditional.scala 37:30:@158.16]
-  wire  _GEN_8; // @[Conditional.scala 39:67:@159.16]
-  wire  _GEN_9; // @[Conditional.scala 39:67:@159.16]
-  wire  _GEN_10; // @[Conditional.scala 39:67:@159.16]
-  wire  _GEN_11; // @[Conditional.scala 39:67:@159.16]
-  wire  _GEN_12; // @[Conditional.scala 39:67:@159.16]
-  wire  _GEN_13; // @[Conditional.scala 39:67:@159.16]
-  wire  _GEN_14; // @[Conditional.scala 39:67:@159.16]
-  wire  _GEN_15; // @[Conditional.scala 39:67:@159.16]
-  wire [1:0] _GEN_16; // @[Conditional.scala 39:67:@159.16]
-  wire  _GEN_17; // @[Conditional.scala 39:67:@139.14]
-  wire  _GEN_18; // @[Conditional.scala 39:67:@139.14]
-  wire  _GEN_19; // @[Conditional.scala 39:67:@139.14]
-  wire  _GEN_20; // @[Conditional.scala 39:67:@139.14]
-  wire  _GEN_21; // @[Conditional.scala 39:67:@139.14]
-  wire  _GEN_22; // @[Conditional.scala 39:67:@139.14]
-  wire  _GEN_23; // @[Conditional.scala 39:67:@139.14]
-  wire  _GEN_24; // @[Conditional.scala 39:67:@139.14]
-  wire  _GEN_25; // @[Conditional.scala 39:67:@139.14]
-  wire  _GEN_26; // @[Conditional.scala 39:67:@139.14]
-  wire  _GEN_27; // @[Conditional.scala 39:67:@139.14]
-  wire  _GEN_28; // @[Conditional.scala 39:67:@139.14]
-  wire  _GEN_29; // @[Conditional.scala 39:67:@139.14]
-  wire  _GEN_30; // @[Conditional.scala 39:67:@139.14]
-  wire  _GEN_31; // @[Conditional.scala 39:67:@139.14]
-  wire  _GEN_32; // @[Conditional.scala 39:67:@139.14]
-  wire [1:0] _GEN_33; // @[Conditional.scala 39:67:@139.14]
-  wire  _GEN_34; // @[Conditional.scala 39:67:@119.12]
-  wire  _GEN_35; // @[Conditional.scala 39:67:@119.12]
-  wire  _GEN_36; // @[Conditional.scala 39:67:@119.12]
-  wire  _GEN_37; // @[Conditional.scala 39:67:@119.12]
-  wire  _GEN_38; // @[Conditional.scala 39:67:@119.12]
-  wire  _GEN_39; // @[Conditional.scala 39:67:@119.12]
-  wire  _GEN_40; // @[Conditional.scala 39:67:@119.12]
-  wire  _GEN_41; // @[Conditional.scala 39:67:@119.12]
-  wire  _GEN_42; // @[Conditional.scala 39:67:@119.12]
-  wire  _GEN_43; // @[Conditional.scala 39:67:@119.12]
-  wire  _GEN_44; // @[Conditional.scala 39:67:@119.12]
-  wire  _GEN_45; // @[Conditional.scala 39:67:@119.12]
-  wire  _GEN_46; // @[Conditional.scala 39:67:@119.12]
-  wire  _GEN_47; // @[Conditional.scala 39:67:@119.12]
-  wire  _GEN_48; // @[Conditional.scala 39:67:@119.12]
-  wire  _GEN_49; // @[Conditional.scala 39:67:@119.12]
-  wire  _GEN_50; // @[Conditional.scala 39:67:@119.12]
-  wire  _GEN_51; // @[Conditional.scala 39:67:@119.12]
-  wire  _GEN_52; // @[Conditional.scala 39:67:@119.12]
-  wire  _GEN_53; // @[Conditional.scala 39:67:@119.12]
-  wire  _GEN_54; // @[Conditional.scala 39:67:@119.12]
-  wire  _GEN_55; // @[Conditional.scala 39:67:@119.12]
-  wire  _GEN_56; // @[Conditional.scala 39:67:@119.12]
-  wire  _GEN_57; // @[Conditional.scala 39:67:@119.12]
-  wire [1:0] _GEN_58; // @[Conditional.scala 39:67:@119.12]
-  wire  _GEN_59; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_60; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_61; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_62; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_63; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_64; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_65; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_66; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_67; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_68; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_69; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_70; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_71; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_72; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_73; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_74; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_75; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_76; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_77; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_78; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_79; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_80; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_81; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_82; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_83; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_84; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_85; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_86; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_87; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_88; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_89; // @[Conditional.scala 40:58:@99.10]
-  wire  _GEN_90; // @[Conditional.scala 40:58:@99.10]
-  wire [1:0] _GEN_91; // @[Conditional.scala 40:58:@99.10]
-  wire [32:0] _T_206; // @[SpiSlaveReceiver.scala 79:36:@178.10]
-  wire [31:0] _T_207; // @[SpiSlaveReceiver.scala 79:36:@179.10]
-  wire  _T_208; // @[Conditional.scala 37:30:@183.10]
-  wire  _T_219; // @[SpiSlaveReceiver.scala 85:39:@200.12]
-  wire  _T_222; // @[SpiSlaveReceiver.scala 88:45:@206.14]
-  wire [1:0] _GEN_92; // @[SpiSlaveReceiver.scala 88:55:@207.14]
-  wire  _GEN_93; // @[SpiSlaveReceiver.scala 88:55:@207.14]
-  wire [1:0] _GEN_94; // @[SpiSlaveReceiver.scala 85:49:@201.12]
-  wire  _GEN_95; // @[SpiSlaveReceiver.scala 85:49:@201.12]
-  wire  _T_225; // @[Conditional.scala 37:30:@218.12]
-  wire  _T_226; // @[Conditional.scala 37:30:@220.14]
-  wire  _T_228; // @[SpiSlaveReceiver.scala 101:49:@223.18]
-  wire [31:0] _GEN_96; // @[SpiSlaveReceiver.scala 101:61:@224.18]
-  wire [1:0] _GEN_97; // @[SpiSlaveReceiver.scala 101:61:@224.18]
-  wire  _T_232; // @[SpiSlaveReceiver.scala 107:49:@231.18]
-  wire  _T_234; // @[SpiSlaveReceiver.scala 109:55:@236.20]
-  wire [1:0] _GEN_98; // @[SpiSlaveReceiver.scala 109:67:@237.20]
-  wire [1:0] _GEN_99; // @[SpiSlaveReceiver.scala 107:61:@232.18]
-  wire [1:0] _GEN_100; // @[SpiSlaveReceiver.scala 107:61:@232.18]
-  wire [31:0] _GEN_101; // @[SpiSlaveReceiver.scala 100:51:@222.16]
-  wire [1:0] _GEN_102; // @[SpiSlaveReceiver.scala 100:51:@222.16]
-  wire [1:0] _GEN_103; // @[SpiSlaveReceiver.scala 100:51:@222.16]
-  wire  _T_235; // @[Conditional.scala 37:30:@243.16]
-  wire  _T_236; // @[SpiSlaveReceiver.scala 115:38:@245.18]
-  wire [31:0] _GEN_104; // @[SpiSlaveReceiver.scala 116:25:@246.18]
-  wire [1:0] _GEN_105; // @[SpiSlaveReceiver.scala 116:25:@246.18]
-  wire  _T_241; // @[Conditional.scala 37:30:@257.18]
-  wire  _T_243; // @[SpiSlaveReceiver.scala 124:38:@259.20]
-  wire [1:0] _T_245; // @[SpiSlaveReceiver.scala 127:41:@263.22]
-  wire [31:0] _GEN_106; // @[SpiSlaveReceiver.scala 124:47:@260.20]
-  wire [1:0] _GEN_107; // @[SpiSlaveReceiver.scala 124:47:@260.20]
-  wire [1:0] _GEN_108; // @[SpiSlaveReceiver.scala 124:47:@260.20]
-  wire [31:0] _GEN_109; // @[Conditional.scala 39:67:@258.18]
-  wire [1:0] _GEN_110; // @[Conditional.scala 39:67:@258.18]
-  wire [1:0] _GEN_111; // @[Conditional.scala 39:67:@258.18]
-  wire [31:0] _GEN_112; // @[Conditional.scala 39:67:@244.16]
-  wire [1:0] _GEN_113; // @[Conditional.scala 39:67:@244.16]
-  wire [1:0] _GEN_114; // @[Conditional.scala 39:67:@244.16]
-  wire [31:0] _GEN_115; // @[Conditional.scala 40:58:@221.14]
-  wire [1:0] _GEN_116; // @[Conditional.scala 40:58:@221.14]
-  wire [1:0] _GEN_117; // @[Conditional.scala 40:58:@221.14]
-  wire [31:0] _GEN_118; // @[Conditional.scala 39:67:@219.12]
-  wire [1:0] _GEN_119; // @[Conditional.scala 39:67:@219.12]
-  wire [1:0] _GEN_120; // @[Conditional.scala 39:67:@219.12]
-  wire  _GEN_121; // @[Conditional.scala 39:67:@184.10]
-  wire [1:0] _GEN_128; // @[Conditional.scala 39:67:@184.10]
-  wire  _GEN_129; // @[Conditional.scala 39:67:@184.10]
-  wire [1:0] _GEN_130; // @[Conditional.scala 39:67:@184.10]
-  wire [31:0] _GEN_131; // @[Conditional.scala 39:67:@184.10]
-  wire  _GEN_132; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_133; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_134; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_135; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_136; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_137; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_138; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_139; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_140; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_141; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_142; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_143; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_144; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_145; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_146; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_147; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_148; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_149; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_150; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_151; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_152; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_153; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_154; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_155; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_156; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_157; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_158; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_159; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_160; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_161; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_162; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_163; // @[Conditional.scala 39:67:@97.8]
-  wire [1:0] _GEN_164; // @[Conditional.scala 39:67:@97.8]
-  wire [31:0] _GEN_165; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_166; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_173; // @[Conditional.scala 39:67:@97.8]
-  wire [1:0] _GEN_174; // @[Conditional.scala 39:67:@97.8]
-  wire  _GEN_175; // @[Conditional.scala 40:58:@71.6]
-  wire [1:0] _GEN_176; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_177; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_178; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_179; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_180; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_181; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_182; // @[Conditional.scala 40:58:@71.6]
-  wire [31:0] _GEN_183; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_184; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_185; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_186; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_187; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_188; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_189; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_190; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_191; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_192; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_193; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_194; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_195; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_196; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_197; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_198; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_199; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_200; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_201; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_202; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_203; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_204; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_205; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_206; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_207; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_208; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_209; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_210; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_211; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_212; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_213; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_214; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_215; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_222; // @[Conditional.scala 40:58:@71.6]
-  wire [1:0] _GEN_223; // @[Conditional.scala 40:58:@71.6]
-  wire  _GEN_224; // @[SpiSlaveReceiver.scala 48:40:@69.4]
-  wire [1:0] _GEN_225; // @[SpiSlaveReceiver.scala 48:40:@69.4]
-  wire [1:0] _GEN_272; // @[SpiSlaveReceiver.scala 48:40:@69.4]
-  assign _T_90 = {commandVec_2,commandVec_1,commandVec_0}; // @[SpiSlaveReceiver.scala 37:36:@18.4]
-  assign _T_92 = {commandVec_5,commandVec_4,commandVec_3}; // @[SpiSlaveReceiver.scala 37:36:@20.4]
-  assign commandVecAsUInt = {commandVec_5,commandVec_4,commandVec_3,commandVec_2,commandVec_1,commandVec_0}; // @[SpiSlaveReceiver.scala 37:36:@21.4]
-  assign _T_101 = {commandArgumentVec_7,commandArgumentVec_6,commandArgumentVec_5,commandArgumentVec_4,commandArgumentVec_3,commandArgumentVec_2,commandArgumentVec_1,commandArgumentVec_0}; // @[SpiSlaveReceiver.scala 42:46:@31.4]
-  assign _T_109 = {commandArgumentVec_15,commandArgumentVec_14,commandArgumentVec_13,commandArgumentVec_12,commandArgumentVec_11,commandArgumentVec_10,commandArgumentVec_9,commandArgumentVec_8,_T_101}; // @[SpiSlaveReceiver.scala 42:46:@39.4]
-  assign _T_116 = {commandArgumentVec_23,commandArgumentVec_22,commandArgumentVec_21,commandArgumentVec_20,commandArgumentVec_19,commandArgumentVec_18,commandArgumentVec_17,commandArgumentVec_16}; // @[SpiSlaveReceiver.scala 42:46:@46.4]
-  assign _T_124 = {commandArgumentVec_31,commandArgumentVec_30,commandArgumentVec_29,commandArgumentVec_28,commandArgumentVec_27,commandArgumentVec_26,commandArgumentVec_25,commandArgumentVec_24,_T_116}; // @[SpiSlaveReceiver.scala 42:46:@54.4]
-  assign _T_130 = io_BufferChanged & _T_129; // @[SpiSlaveReceiver.scala 11:11:@64.4]
-  assign _T_134 = _T_132 == 1'h0; // @[SpiSlaveReceiver.scala 11:22:@67.4]
-  assign _T_135 = _T_130 & _T_134; // @[SpiSlaveReceiver.scala 11:19:@68.4]
-  assign _T_136 = 2'h0 == state; // @[Conditional.scala 37:30:@70.6]
-  assign _T_138 = io_InputBuffer[7]; // @[SpiSlaveReceiver.scala 52:36:@73.8]
-  assign _T_140 = _T_138 == 1'h0; // @[SpiSlaveReceiver.scala 52:40:@74.8]
-  assign _T_141 = io_InputBuffer[6]; // @[SpiSlaveReceiver.scala 52:69:@75.8]
-  assign _T_144 = _T_140 & _T_141; // @[SpiSlaveReceiver.scala 52:52:@77.8]
-  assign _T_147 = io_InputBuffer[0]; // @[SpiSlaveReceiver.scala 55:58:@80.10]
-  assign _T_150 = io_InputBuffer[1]; // @[SpiSlaveReceiver.scala 55:58:@82.10]
-  assign _T_153 = io_InputBuffer[2]; // @[SpiSlaveReceiver.scala 55:58:@84.10]
-  assign _T_156 = io_InputBuffer[3]; // @[SpiSlaveReceiver.scala 55:58:@86.10]
-  assign _T_159 = io_InputBuffer[4]; // @[SpiSlaveReceiver.scala 55:58:@88.10]
-  assign _T_162 = io_InputBuffer[5]; // @[SpiSlaveReceiver.scala 55:58:@90.10]
-  assign _GEN_0 = _T_144 ? 2'h1 : state; // @[SpiSlaveReceiver.scala 52:85:@78.8]
-  assign _GEN_1 = _T_144 ? _T_147 : commandVec_0; // @[SpiSlaveReceiver.scala 52:85:@78.8]
-  assign _GEN_2 = _T_144 ? _T_150 : commandVec_1; // @[SpiSlaveReceiver.scala 52:85:@78.8]
-  assign _GEN_3 = _T_144 ? _T_153 : commandVec_2; // @[SpiSlaveReceiver.scala 52:85:@78.8]
-  assign _GEN_4 = _T_144 ? _T_156 : commandVec_3; // @[SpiSlaveReceiver.scala 52:85:@78.8]
-  assign _GEN_5 = _T_144 ? _T_159 : commandVec_4; // @[SpiSlaveReceiver.scala 52:85:@78.8]
-  assign _GEN_6 = _T_144 ? _T_162 : commandVec_5; // @[SpiSlaveReceiver.scala 52:85:@78.8]
-  assign _GEN_7 = _T_144 ? 32'h0 : counter; // @[SpiSlaveReceiver.scala 52:85:@78.8]
-  assign _T_164 = 2'h1 == state; // @[Conditional.scala 37:30:@96.8]
-  assign _T_166 = 32'h0 == counter; // @[Conditional.scala 37:30:@98.10]
-  assign _T_176 = 32'h1 == counter; // @[Conditional.scala 37:30:@118.12]
-  assign _T_186 = 32'h2 == counter; // @[Conditional.scala 37:30:@138.14]
-  assign _T_196 = 32'h3 == counter; // @[Conditional.scala 37:30:@158.16]
-  assign _GEN_8 = _T_196 ? _T_147 : commandArgumentVec_0; // @[Conditional.scala 39:67:@159.16]
-  assign _GEN_9 = _T_196 ? _T_150 : commandArgumentVec_1; // @[Conditional.scala 39:67:@159.16]
-  assign _GEN_10 = _T_196 ? _T_153 : commandArgumentVec_2; // @[Conditional.scala 39:67:@159.16]
-  assign _GEN_11 = _T_196 ? _T_156 : commandArgumentVec_3; // @[Conditional.scala 39:67:@159.16]
-  assign _GEN_12 = _T_196 ? _T_159 : commandArgumentVec_4; // @[Conditional.scala 39:67:@159.16]
-  assign _GEN_13 = _T_196 ? _T_162 : commandArgumentVec_5; // @[Conditional.scala 39:67:@159.16]
-  assign _GEN_14 = _T_196 ? _T_141 : commandArgumentVec_6; // @[Conditional.scala 39:67:@159.16]
-  assign _GEN_15 = _T_196 ? _T_138 : commandArgumentVec_7; // @[Conditional.scala 39:67:@159.16]
-  assign _GEN_16 = _T_196 ? 2'h2 : state; // @[Conditional.scala 39:67:@159.16]
-  assign _GEN_17 = _T_186 ? _T_147 : commandArgumentVec_8; // @[Conditional.scala 39:67:@139.14]
-  assign _GEN_18 = _T_186 ? _T_150 : commandArgumentVec_9; // @[Conditional.scala 39:67:@139.14]
-  assign _GEN_19 = _T_186 ? _T_153 : commandArgumentVec_10; // @[Conditional.scala 39:67:@139.14]
-  assign _GEN_20 = _T_186 ? _T_156 : commandArgumentVec_11; // @[Conditional.scala 39:67:@139.14]
-  assign _GEN_21 = _T_186 ? _T_159 : commandArgumentVec_12; // @[Conditional.scala 39:67:@139.14]
-  assign _GEN_22 = _T_186 ? _T_162 : commandArgumentVec_13; // @[Conditional.scala 39:67:@139.14]
-  assign _GEN_23 = _T_186 ? _T_141 : commandArgumentVec_14; // @[Conditional.scala 39:67:@139.14]
-  assign _GEN_24 = _T_186 ? _T_138 : commandArgumentVec_15; // @[Conditional.scala 39:67:@139.14]
-  assign _GEN_25 = _T_186 ? commandArgumentVec_0 : _GEN_8; // @[Conditional.scala 39:67:@139.14]
-  assign _GEN_26 = _T_186 ? commandArgumentVec_1 : _GEN_9; // @[Conditional.scala 39:67:@139.14]
-  assign _GEN_27 = _T_186 ? commandArgumentVec_2 : _GEN_10; // @[Conditional.scala 39:67:@139.14]
-  assign _GEN_28 = _T_186 ? commandArgumentVec_3 : _GEN_11; // @[Conditional.scala 39:67:@139.14]
-  assign _GEN_29 = _T_186 ? commandArgumentVec_4 : _GEN_12; // @[Conditional.scala 39:67:@139.14]
-  assign _GEN_30 = _T_186 ? commandArgumentVec_5 : _GEN_13; // @[Conditional.scala 39:67:@139.14]
-  assign _GEN_31 = _T_186 ? commandArgumentVec_6 : _GEN_14; // @[Conditional.scala 39:67:@139.14]
-  assign _GEN_32 = _T_186 ? commandArgumentVec_7 : _GEN_15; // @[Conditional.scala 39:67:@139.14]
-  assign _GEN_33 = _T_186 ? state : _GEN_16; // @[Conditional.scala 39:67:@139.14]
-  assign _GEN_34 = _T_176 ? _T_147 : commandArgumentVec_16; // @[Conditional.scala 39:67:@119.12]
-  assign _GEN_35 = _T_176 ? _T_150 : commandArgumentVec_17; // @[Conditional.scala 39:67:@119.12]
-  assign _GEN_36 = _T_176 ? _T_153 : commandArgumentVec_18; // @[Conditional.scala 39:67:@119.12]
-  assign _GEN_37 = _T_176 ? _T_156 : commandArgumentVec_19; // @[Conditional.scala 39:67:@119.12]
-  assign _GEN_38 = _T_176 ? _T_159 : commandArgumentVec_20; // @[Conditional.scala 39:67:@119.12]
-  assign _GEN_39 = _T_176 ? _T_162 : commandArgumentVec_21; // @[Conditional.scala 39:67:@119.12]
-  assign _GEN_40 = _T_176 ? _T_141 : commandArgumentVec_22; // @[Conditional.scala 39:67:@119.12]
-  assign _GEN_41 = _T_176 ? _T_138 : commandArgumentVec_23; // @[Conditional.scala 39:67:@119.12]
-  assign _GEN_42 = _T_176 ? commandArgumentVec_8 : _GEN_17; // @[Conditional.scala 39:67:@119.12]
-  assign _GEN_43 = _T_176 ? commandArgumentVec_9 : _GEN_18; // @[Conditional.scala 39:67:@119.12]
-  assign _GEN_44 = _T_176 ? commandArgumentVec_10 : _GEN_19; // @[Conditional.scala 39:67:@119.12]
-  assign _GEN_45 = _T_176 ? commandArgumentVec_11 : _GEN_20; // @[Conditional.scala 39:67:@119.12]
-  assign _GEN_46 = _T_176 ? commandArgumentVec_12 : _GEN_21; // @[Conditional.scala 39:67:@119.12]
-  assign _GEN_47 = _T_176 ? commandArgumentVec_13 : _GEN_22; // @[Conditional.scala 39:67:@119.12]
-  assign _GEN_48 = _T_176 ? commandArgumentVec_14 : _GEN_23; // @[Conditional.scala 39:67:@119.12]
-  assign _GEN_49 = _T_176 ? commandArgumentVec_15 : _GEN_24; // @[Conditional.scala 39:67:@119.12]
-  assign _GEN_50 = _T_176 ? commandArgumentVec_0 : _GEN_25; // @[Conditional.scala 39:67:@119.12]
-  assign _GEN_51 = _T_176 ? commandArgumentVec_1 : _GEN_26; // @[Conditional.scala 39:67:@119.12]
-  assign _GEN_52 = _T_176 ? commandArgumentVec_2 : _GEN_27; // @[Conditional.scala 39:67:@119.12]
-  assign _GEN_53 = _T_176 ? commandArgumentVec_3 : _GEN_28; // @[Conditional.scala 39:67:@119.12]
-  assign _GEN_54 = _T_176 ? commandArgumentVec_4 : _GEN_29; // @[Conditional.scala 39:67:@119.12]
-  assign _GEN_55 = _T_176 ? commandArgumentVec_5 : _GEN_30; // @[Conditional.scala 39:67:@119.12]
-  assign _GEN_56 = _T_176 ? commandArgumentVec_6 : _GEN_31; // @[Conditional.scala 39:67:@119.12]
-  assign _GEN_57 = _T_176 ? commandArgumentVec_7 : _GEN_32; // @[Conditional.scala 39:67:@119.12]
-  assign _GEN_58 = _T_176 ? state : _GEN_33; // @[Conditional.scala 39:67:@119.12]
-  assign _GEN_59 = _T_166 ? _T_147 : commandArgumentVec_24; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_60 = _T_166 ? _T_150 : commandArgumentVec_25; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_61 = _T_166 ? _T_153 : commandArgumentVec_26; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_62 = _T_166 ? _T_156 : commandArgumentVec_27; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_63 = _T_166 ? _T_159 : commandArgumentVec_28; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_64 = _T_166 ? _T_162 : commandArgumentVec_29; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_65 = _T_166 ? _T_141 : commandArgumentVec_30; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_66 = _T_166 ? _T_138 : commandArgumentVec_31; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_67 = _T_166 ? commandArgumentVec_16 : _GEN_34; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_68 = _T_166 ? commandArgumentVec_17 : _GEN_35; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_69 = _T_166 ? commandArgumentVec_18 : _GEN_36; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_70 = _T_166 ? commandArgumentVec_19 : _GEN_37; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_71 = _T_166 ? commandArgumentVec_20 : _GEN_38; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_72 = _T_166 ? commandArgumentVec_21 : _GEN_39; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_73 = _T_166 ? commandArgumentVec_22 : _GEN_40; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_74 = _T_166 ? commandArgumentVec_23 : _GEN_41; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_75 = _T_166 ? commandArgumentVec_8 : _GEN_42; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_76 = _T_166 ? commandArgumentVec_9 : _GEN_43; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_77 = _T_166 ? commandArgumentVec_10 : _GEN_44; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_78 = _T_166 ? commandArgumentVec_11 : _GEN_45; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_79 = _T_166 ? commandArgumentVec_12 : _GEN_46; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_80 = _T_166 ? commandArgumentVec_13 : _GEN_47; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_81 = _T_166 ? commandArgumentVec_14 : _GEN_48; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_82 = _T_166 ? commandArgumentVec_15 : _GEN_49; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_83 = _T_166 ? commandArgumentVec_0 : _GEN_50; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_84 = _T_166 ? commandArgumentVec_1 : _GEN_51; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_85 = _T_166 ? commandArgumentVec_2 : _GEN_52; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_86 = _T_166 ? commandArgumentVec_3 : _GEN_53; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_87 = _T_166 ? commandArgumentVec_4 : _GEN_54; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_88 = _T_166 ? commandArgumentVec_5 : _GEN_55; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_89 = _T_166 ? commandArgumentVec_6 : _GEN_56; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_90 = _T_166 ? commandArgumentVec_7 : _GEN_57; // @[Conditional.scala 40:58:@99.10]
-  assign _GEN_91 = _T_166 ? state : _GEN_58; // @[Conditional.scala 40:58:@99.10]
-  assign _T_206 = counter + 32'h1; // @[SpiSlaveReceiver.scala 79:36:@178.10]
-  assign _T_207 = counter + 32'h1; // @[SpiSlaveReceiver.scala 79:36:@179.10]
-  assign _T_208 = 2'h2 == state; // @[Conditional.scala 37:30:@183.10]
-  assign _T_219 = commandVecAsUInt == 6'h18; // @[SpiSlaveReceiver.scala 85:39:@200.12]
-  assign _T_222 = commandVecAsUInt == 6'h19; // @[SpiSlaveReceiver.scala 88:45:@206.14]
-  assign _GEN_92 = _T_222 ? 2'h3 : 2'h0; // @[SpiSlaveReceiver.scala 88:55:@207.14]
-  assign _GEN_93 = _T_222 ? 1'h0 : 1'h1; // @[SpiSlaveReceiver.scala 88:55:@207.14]
-  assign _GEN_94 = _T_219 ? 2'h3 : _GEN_92; // @[SpiSlaveReceiver.scala 85:49:@201.12]
-  assign _GEN_95 = _T_219 ? 1'h1 : _GEN_93; // @[SpiSlaveReceiver.scala 85:49:@201.12]
-  assign _T_225 = 2'h3 == state; // @[Conditional.scala 37:30:@218.12]
-  assign _T_226 = 2'h0 == writestate; // @[Conditional.scala 37:30:@220.14]
-  assign _T_228 = io_InputBuffer == 8'hfe; // @[SpiSlaveReceiver.scala 101:49:@223.18]
-  assign _GEN_96 = _T_228 ? 32'h1 : counter; // @[SpiSlaveReceiver.scala 101:61:@224.18]
-  assign _GEN_97 = _T_228 ? 2'h1 : writestate; // @[SpiSlaveReceiver.scala 101:61:@224.18]
-  assign _T_232 = io_InputBuffer == 8'hfc; // @[SpiSlaveReceiver.scala 107:49:@231.18]
-  assign _T_234 = io_InputBuffer == 8'hfd; // @[SpiSlaveReceiver.scala 109:55:@236.20]
-  assign _GEN_98 = _T_234 ? 2'h0 : state; // @[SpiSlaveReceiver.scala 109:67:@237.20]
-  assign _GEN_99 = _T_232 ? 2'h1 : writestate; // @[SpiSlaveReceiver.scala 107:61:@232.18]
-  assign _GEN_100 = _T_232 ? state : _GEN_98; // @[SpiSlaveReceiver.scala 107:61:@232.18]
-  assign _GEN_101 = writestate_isSingle ? _GEN_96 : 32'h1; // @[SpiSlaveReceiver.scala 100:51:@222.16]
-  assign _GEN_102 = writestate_isSingle ? _GEN_97 : _GEN_99; // @[SpiSlaveReceiver.scala 100:51:@222.16]
-  assign _GEN_103 = writestate_isSingle ? state : _GEN_100; // @[SpiSlaveReceiver.scala 100:51:@222.16]
-  assign _T_235 = 2'h1 == writestate; // @[Conditional.scala 37:30:@243.16]
-  assign _T_236 = counter == io_DataBlockSize; // @[SpiSlaveReceiver.scala 115:38:@245.18]
-  assign _GEN_104 = _T_236 ? 32'h1 : _T_207; // @[SpiSlaveReceiver.scala 116:25:@246.18]
-  assign _GEN_105 = _T_236 ? 2'h2 : writestate; // @[SpiSlaveReceiver.scala 116:25:@246.18]
-  assign _T_241 = 2'h2 == writestate; // @[Conditional.scala 37:30:@257.18]
-  assign _T_243 = counter == 32'h2; // @[SpiSlaveReceiver.scala 124:38:@259.20]
-  assign _T_245 = writestate_isSingle ? 2'h0 : 2'h3; // @[SpiSlaveReceiver.scala 127:41:@263.22]
-  assign _GEN_106 = _T_243 ? 32'h0 : _T_207; // @[SpiSlaveReceiver.scala 124:47:@260.20]
-  assign _GEN_107 = _T_243 ? 2'h0 : writestate; // @[SpiSlaveReceiver.scala 124:47:@260.20]
-  assign _GEN_108 = _T_243 ? _T_245 : state; // @[SpiSlaveReceiver.scala 124:47:@260.20]
-  assign _GEN_109 = _T_241 ? _GEN_106 : counter; // @[Conditional.scala 39:67:@258.18]
-  assign _GEN_110 = _T_241 ? _GEN_107 : writestate; // @[Conditional.scala 39:67:@258.18]
-  assign _GEN_111 = _T_241 ? _GEN_108 : state; // @[Conditional.scala 39:67:@258.18]
-  assign _GEN_112 = _T_235 ? _GEN_104 : _GEN_109; // @[Conditional.scala 39:67:@244.16]
-  assign _GEN_113 = _T_235 ? _GEN_105 : _GEN_110; // @[Conditional.scala 39:67:@244.16]
-  assign _GEN_114 = _T_235 ? state : _GEN_111; // @[Conditional.scala 39:67:@244.16]
-  assign _GEN_115 = _T_226 ? _GEN_101 : _GEN_112; // @[Conditional.scala 40:58:@221.14]
-  assign _GEN_116 = _T_226 ? _GEN_102 : _GEN_113; // @[Conditional.scala 40:58:@221.14]
-  assign _GEN_117 = _T_226 ? _GEN_103 : _GEN_114; // @[Conditional.scala 40:58:@221.14]
-  assign _GEN_118 = _T_225 ? _GEN_115 : counter; // @[Conditional.scala 39:67:@219.12]
-  assign _GEN_119 = _T_225 ? _GEN_116 : writestate; // @[Conditional.scala 39:67:@219.12]
-  assign _GEN_120 = _T_225 ? _GEN_117 : state; // @[Conditional.scala 39:67:@219.12]
-  assign _GEN_121 = _T_208 ? _T_147 : readSuccess; // @[Conditional.scala 39:67:@184.10]
-  assign _GEN_128 = _T_208 ? _GEN_94 : _GEN_120; // @[Conditional.scala 39:67:@184.10]
-  assign _GEN_129 = _T_208 ? _GEN_95 : writestate_isSingle; // @[Conditional.scala 39:67:@184.10]
-  assign _GEN_130 = _T_208 ? 2'h0 : _GEN_119; // @[Conditional.scala 39:67:@184.10]
-  assign _GEN_131 = _T_208 ? counter : _GEN_118; // @[Conditional.scala 39:67:@184.10]
-  assign _GEN_132 = _T_164 ? _GEN_59 : commandArgumentVec_24; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_133 = _T_164 ? _GEN_60 : commandArgumentVec_25; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_134 = _T_164 ? _GEN_61 : commandArgumentVec_26; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_135 = _T_164 ? _GEN_62 : commandArgumentVec_27; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_136 = _T_164 ? _GEN_63 : commandArgumentVec_28; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_137 = _T_164 ? _GEN_64 : commandArgumentVec_29; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_138 = _T_164 ? _GEN_65 : commandArgumentVec_30; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_139 = _T_164 ? _GEN_66 : commandArgumentVec_31; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_140 = _T_164 ? _GEN_67 : commandArgumentVec_16; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_141 = _T_164 ? _GEN_68 : commandArgumentVec_17; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_142 = _T_164 ? _GEN_69 : commandArgumentVec_18; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_143 = _T_164 ? _GEN_70 : commandArgumentVec_19; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_144 = _T_164 ? _GEN_71 : commandArgumentVec_20; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_145 = _T_164 ? _GEN_72 : commandArgumentVec_21; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_146 = _T_164 ? _GEN_73 : commandArgumentVec_22; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_147 = _T_164 ? _GEN_74 : commandArgumentVec_23; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_148 = _T_164 ? _GEN_75 : commandArgumentVec_8; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_149 = _T_164 ? _GEN_76 : commandArgumentVec_9; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_150 = _T_164 ? _GEN_77 : commandArgumentVec_10; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_151 = _T_164 ? _GEN_78 : commandArgumentVec_11; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_152 = _T_164 ? _GEN_79 : commandArgumentVec_12; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_153 = _T_164 ? _GEN_80 : commandArgumentVec_13; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_154 = _T_164 ? _GEN_81 : commandArgumentVec_14; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_155 = _T_164 ? _GEN_82 : commandArgumentVec_15; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_156 = _T_164 ? _GEN_83 : commandArgumentVec_0; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_157 = _T_164 ? _GEN_84 : commandArgumentVec_1; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_158 = _T_164 ? _GEN_85 : commandArgumentVec_2; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_159 = _T_164 ? _GEN_86 : commandArgumentVec_3; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_160 = _T_164 ? _GEN_87 : commandArgumentVec_4; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_161 = _T_164 ? _GEN_88 : commandArgumentVec_5; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_162 = _T_164 ? _GEN_89 : commandArgumentVec_6; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_163 = _T_164 ? _GEN_90 : commandArgumentVec_7; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_164 = _T_164 ? _GEN_91 : _GEN_128; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_165 = _T_164 ? _T_207 : _GEN_131; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_166 = _T_164 ? readSuccess : _GEN_121; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_173 = _T_164 ? writestate_isSingle : _GEN_129; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_174 = _T_164 ? writestate : _GEN_130; // @[Conditional.scala 39:67:@97.8]
-  assign _GEN_175 = _T_136 ? 1'h0 : _GEN_166; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_176 = _T_136 ? _GEN_0 : _GEN_164; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_177 = _T_136 ? _GEN_1 : commandVec_0; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_178 = _T_136 ? _GEN_2 : commandVec_1; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_179 = _T_136 ? _GEN_3 : commandVec_2; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_180 = _T_136 ? _GEN_4 : commandVec_3; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_181 = _T_136 ? _GEN_5 : commandVec_4; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_182 = _T_136 ? _GEN_6 : commandVec_5; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_183 = _T_136 ? _GEN_7 : _GEN_165; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_184 = _T_136 ? commandArgumentVec_24 : _GEN_132; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_185 = _T_136 ? commandArgumentVec_25 : _GEN_133; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_186 = _T_136 ? commandArgumentVec_26 : _GEN_134; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_187 = _T_136 ? commandArgumentVec_27 : _GEN_135; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_188 = _T_136 ? commandArgumentVec_28 : _GEN_136; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_189 = _T_136 ? commandArgumentVec_29 : _GEN_137; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_190 = _T_136 ? commandArgumentVec_30 : _GEN_138; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_191 = _T_136 ? commandArgumentVec_31 : _GEN_139; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_192 = _T_136 ? commandArgumentVec_16 : _GEN_140; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_193 = _T_136 ? commandArgumentVec_17 : _GEN_141; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_194 = _T_136 ? commandArgumentVec_18 : _GEN_142; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_195 = _T_136 ? commandArgumentVec_19 : _GEN_143; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_196 = _T_136 ? commandArgumentVec_20 : _GEN_144; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_197 = _T_136 ? commandArgumentVec_21 : _GEN_145; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_198 = _T_136 ? commandArgumentVec_22 : _GEN_146; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_199 = _T_136 ? commandArgumentVec_23 : _GEN_147; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_200 = _T_136 ? commandArgumentVec_8 : _GEN_148; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_201 = _T_136 ? commandArgumentVec_9 : _GEN_149; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_202 = _T_136 ? commandArgumentVec_10 : _GEN_150; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_203 = _T_136 ? commandArgumentVec_11 : _GEN_151; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_204 = _T_136 ? commandArgumentVec_12 : _GEN_152; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_205 = _T_136 ? commandArgumentVec_13 : _GEN_153; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_206 = _T_136 ? commandArgumentVec_14 : _GEN_154; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_207 = _T_136 ? commandArgumentVec_15 : _GEN_155; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_208 = _T_136 ? commandArgumentVec_0 : _GEN_156; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_209 = _T_136 ? commandArgumentVec_1 : _GEN_157; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_210 = _T_136 ? commandArgumentVec_2 : _GEN_158; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_211 = _T_136 ? commandArgumentVec_3 : _GEN_159; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_212 = _T_136 ? commandArgumentVec_4 : _GEN_160; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_213 = _T_136 ? commandArgumentVec_5 : _GEN_161; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_214 = _T_136 ? commandArgumentVec_6 : _GEN_162; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_215 = _T_136 ? commandArgumentVec_7 : _GEN_163; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_222 = _T_136 ? writestate_isSingle : _GEN_173; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_223 = _T_136 ? writestate : _GEN_174; // @[Conditional.scala 40:58:@71.6]
-  assign _GEN_224 = _T_135 ? _GEN_175 : readSuccess; // @[SpiSlaveReceiver.scala 48:40:@69.4]
-  assign _GEN_225 = _T_135 ? _GEN_176 : state; // @[SpiSlaveReceiver.scala 48:40:@69.4]
-  assign _GEN_272 = _T_135 ? _GEN_223 : writestate; // @[SpiSlaveReceiver.scala 48:40:@69.4]
-  assign io_CommandReadFinished = state > 2'h0; // @[SpiSlaveReceiver.scala 44:28:@58.4]
-  assign io_ArgumentReadFinished = state > 2'h1; // @[SpiSlaveReceiver.scala 45:29:@60.4]
-  assign io_ReadSuccess = readSuccess; // @[SpiSlaveReceiver.scala 46:20:@61.4]
-  assign io_Command = {_T_92,_T_90}; // @[SpiSlaveReceiver.scala 41:16:@24.4]
-  assign io_CommandArgument = {_T_124,_T_109}; // @[SpiSlaveReceiver.scala 42:24:@56.4]
-  assign io____state = {{1'd0}, state}; // @[SpiSlaveReceiver.scala 29:17:@11.4]
+  wire  _T_41; // @[SpiSlaveReceiver.scala 11:22]
+  wire  _T_42; // @[SpiSlaveReceiver.scala 11:19]
+  wire  _T_43; // @[Conditional.scala 37:30]
+  wire  _T_44; // @[SpiSlaveReceiver.scala 52:36]
+  wire  _T_45; // @[SpiSlaveReceiver.scala 52:40]
+  wire  _T_46; // @[SpiSlaveReceiver.scala 52:69]
+  wire  _T_48; // @[SpiSlaveReceiver.scala 52:52]
+  wire  _T_49; // @[SpiSlaveReceiver.scala 55:58]
+  wire  _T_50; // @[SpiSlaveReceiver.scala 55:58]
+  wire  _T_51; // @[SpiSlaveReceiver.scala 55:58]
+  wire  _T_52; // @[SpiSlaveReceiver.scala 55:58]
+  wire  _T_53; // @[SpiSlaveReceiver.scala 55:58]
+  wire  _T_54; // @[SpiSlaveReceiver.scala 55:58]
+  wire  _T_55; // @[Conditional.scala 37:30]
+  wire  _T_56; // @[Conditional.scala 37:30]
+  wire  _T_65; // @[Conditional.scala 37:30]
+  wire  _T_74; // @[Conditional.scala 37:30]
+  wire  _T_83; // @[Conditional.scala 37:30]
+  wire [31:0] _T_93; // @[SpiSlaveReceiver.scala 79:36]
+  wire  _T_94; // @[Conditional.scala 37:30]
+  wire  _T_103; // @[SpiSlaveReceiver.scala 85:39]
+  wire  _T_104; // @[SpiSlaveReceiver.scala 88:45]
+  wire  _GEN_93; // @[SpiSlaveReceiver.scala 88:55]
+  wire  _GEN_95; // @[SpiSlaveReceiver.scala 85:49]
+  wire  _T_105; // @[Conditional.scala 37:30]
+  wire  _T_106; // @[Conditional.scala 37:30]
+  wire  _T_107; // @[SpiSlaveReceiver.scala 101:49]
+  wire  _T_108; // @[SpiSlaveReceiver.scala 107:49]
+  wire  _T_109; // @[SpiSlaveReceiver.scala 109:55]
+  wire  _T_110; // @[Conditional.scala 37:30]
+  wire  _T_111; // @[SpiSlaveReceiver.scala 115:38]
+  wire  _T_114; // @[Conditional.scala 37:30]
+  wire  _T_115; // @[SpiSlaveReceiver.scala 124:38]
+  assign _T_1 = {commandVec_2,commandVec_1,commandVec_0}; // @[SpiSlaveReceiver.scala 37:36]
+  assign _T_3 = {commandVec_5,commandVec_4,commandVec_3}; // @[SpiSlaveReceiver.scala 37:36]
+  assign commandVecAsUInt = {commandVec_5,commandVec_4,commandVec_3,commandVec_2,commandVec_1,commandVec_0}; // @[SpiSlaveReceiver.scala 37:36]
+  assign _T_11 = {commandArgumentVec_7,commandArgumentVec_6,commandArgumentVec_5,commandArgumentVec_4,commandArgumentVec_3,commandArgumentVec_2,commandArgumentVec_1,commandArgumentVec_0}; // @[SpiSlaveReceiver.scala 42:46]
+  assign _T_19 = {commandArgumentVec_15,commandArgumentVec_14,commandArgumentVec_13,commandArgumentVec_12,commandArgumentVec_11,commandArgumentVec_10,commandArgumentVec_9,commandArgumentVec_8,_T_11}; // @[SpiSlaveReceiver.scala 42:46]
+  assign _T_26 = {commandArgumentVec_23,commandArgumentVec_22,commandArgumentVec_21,commandArgumentVec_20,commandArgumentVec_19,commandArgumentVec_18,commandArgumentVec_17,commandArgumentVec_16}; // @[SpiSlaveReceiver.scala 42:46]
+  assign _T_34 = {commandArgumentVec_31,commandArgumentVec_30,commandArgumentVec_29,commandArgumentVec_28,commandArgumentVec_27,commandArgumentVec_26,commandArgumentVec_25,commandArgumentVec_24,_T_26}; // @[SpiSlaveReceiver.scala 42:46]
+  assign _T_39 = io_BufferChanged & _T_38; // @[SpiSlaveReceiver.scala 11:11]
+  assign _T_41 = _T_40 == 1'h0; // @[SpiSlaveReceiver.scala 11:22]
+  assign _T_42 = _T_39 & _T_41; // @[SpiSlaveReceiver.scala 11:19]
+  assign _T_43 = 2'h0 == state; // @[Conditional.scala 37:30]
+  assign _T_44 = io_InputBuffer[7]; // @[SpiSlaveReceiver.scala 52:36]
+  assign _T_45 = _T_44 == 1'h0; // @[SpiSlaveReceiver.scala 52:40]
+  assign _T_46 = io_InputBuffer[6]; // @[SpiSlaveReceiver.scala 52:69]
+  assign _T_48 = _T_45 & _T_46; // @[SpiSlaveReceiver.scala 52:52]
+  assign _T_49 = io_InputBuffer[0]; // @[SpiSlaveReceiver.scala 55:58]
+  assign _T_50 = io_InputBuffer[1]; // @[SpiSlaveReceiver.scala 55:58]
+  assign _T_51 = io_InputBuffer[2]; // @[SpiSlaveReceiver.scala 55:58]
+  assign _T_52 = io_InputBuffer[3]; // @[SpiSlaveReceiver.scala 55:58]
+  assign _T_53 = io_InputBuffer[4]; // @[SpiSlaveReceiver.scala 55:58]
+  assign _T_54 = io_InputBuffer[5]; // @[SpiSlaveReceiver.scala 55:58]
+  assign _T_55 = 2'h1 == state; // @[Conditional.scala 37:30]
+  assign _T_56 = 32'h0 == counter; // @[Conditional.scala 37:30]
+  assign _T_65 = 32'h1 == counter; // @[Conditional.scala 37:30]
+  assign _T_74 = 32'h2 == counter; // @[Conditional.scala 37:30]
+  assign _T_83 = 32'h3 == counter; // @[Conditional.scala 37:30]
+  assign _T_93 = counter + 32'h1; // @[SpiSlaveReceiver.scala 79:36]
+  assign _T_94 = 2'h2 == state; // @[Conditional.scala 37:30]
+  assign _T_103 = commandVecAsUInt == 6'h18; // @[SpiSlaveReceiver.scala 85:39]
+  assign _T_104 = commandVecAsUInt == 6'h19; // @[SpiSlaveReceiver.scala 88:45]
+  assign _GEN_93 = _T_104 ? 1'h0 : 1'h1; // @[SpiSlaveReceiver.scala 88:55]
+  assign _GEN_95 = _T_103 | _GEN_93; // @[SpiSlaveReceiver.scala 85:49]
+  assign _T_105 = 2'h3 == state; // @[Conditional.scala 37:30]
+  assign _T_106 = 2'h0 == writestate; // @[Conditional.scala 37:30]
+  assign _T_107 = io_InputBuffer == 8'hfe; // @[SpiSlaveReceiver.scala 101:49]
+  assign _T_108 = io_InputBuffer == 8'hfc; // @[SpiSlaveReceiver.scala 107:49]
+  assign _T_109 = io_InputBuffer == 8'hfd; // @[SpiSlaveReceiver.scala 109:55]
+  assign _T_110 = 2'h1 == writestate; // @[Conditional.scala 37:30]
+  assign _T_111 = counter == io_DataBlockSize; // @[SpiSlaveReceiver.scala 115:38]
+  assign _T_114 = 2'h2 == writestate; // @[Conditional.scala 37:30]
+  assign _T_115 = counter == 32'h2; // @[SpiSlaveReceiver.scala 124:38]
+  assign io_CommandReadFinished = state > 2'h0; // @[SpiSlaveReceiver.scala 44:28]
+  assign io_ArgumentReadFinished = state > 2'h1; // @[SpiSlaveReceiver.scala 45:29]
+  assign io_ReadSuccess = readSuccess; // @[SpiSlaveReceiver.scala 46:20]
+  assign io_Command = {_T_3,_T_1}; // @[SpiSlaveReceiver.scala 41:16]
+  assign io_CommandArgument = {_T_34,_T_19}; // @[SpiSlaveReceiver.scala 42:24]
+  assign io____state = {{1'd0}, state}; // @[SpiSlaveReceiver.scala 29:17]
 `ifdef RANDOMIZE_GARBAGE_ASSIGN
 `define RANDOMIZE
 `endif
@@ -622,14 +204,20 @@ module SpiSlaveReceiver( // @[:@3.2]
 `ifndef RANDOM
 `define RANDOM $random
 `endif
-`ifdef RANDOMIZE
+`ifdef RANDOMIZE_MEM_INIT
   integer initvar;
-  initial begin
+`endif
+initial begin
+  `ifdef RANDOMIZE
     `ifdef INIT_RANDOM
       `INIT_RANDOM
     `endif
     `ifndef VERILATOR
-      #0.002 begin end
+      `ifdef RANDOMIZE_DELAY
+        #`RANDOMIZE_DELAY begin end
+      `else
+        #0.002 begin end
+      `endif
     `endif
   `ifdef RANDOMIZE_REG_INIT
   _RAND_0 = {1{`RANDOM}};
@@ -805,28 +393,20 @@ module SpiSlaveReceiver( // @[:@3.2]
   `endif // RANDOMIZE_REG_INIT
   `ifdef RANDOMIZE_REG_INIT
   _RAND_43 = {1{`RANDOM}};
-  _T_129 = _RAND_43[0:0];
+  _T_38 = _RAND_43[0:0];
   `endif // RANDOMIZE_REG_INIT
   `ifdef RANDOMIZE_REG_INIT
   _RAND_44 = {1{`RANDOM}};
-  _T_132 = _RAND_44[0:0];
+  _T_40 = _RAND_44[0:0];
   `endif // RANDOMIZE_REG_INIT
-  end
-`endif // RANDOMIZE
+  `endif // RANDOMIZE
+end
   always @(posedge clock) begin
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (!(_T_164)) begin
-          if (_T_208) begin
-            if (_T_219) begin
-              writestate_isSingle <= 1'h1;
-            end else begin
-              if (_T_222) begin
-                writestate_isSingle <= 1'h0;
-              end else begin
-                writestate_isSingle <= 1'h1;
-              end
-            end
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (!(_T_55)) begin
+          if (_T_94) begin
+            writestate_isSingle <= _GEN_95;
           end
         end
       end
@@ -834,47 +414,47 @@ module SpiSlaveReceiver( // @[:@3.2]
     if (reset) begin
       state <= 2'h0;
     end else begin
-      if (_T_135) begin
-        if (_T_136) begin
-          if (_T_144) begin
+      if (_T_42) begin
+        if (_T_43) begin
+          if (_T_48) begin
             state <= 2'h1;
           end
         end else begin
-          if (_T_164) begin
-            if (!(_T_166)) begin
-              if (!(_T_176)) begin
-                if (!(_T_186)) begin
-                  if (_T_196) begin
+          if (_T_55) begin
+            if (!(_T_56)) begin
+              if (!(_T_65)) begin
+                if (!(_T_74)) begin
+                  if (_T_83) begin
                     state <= 2'h2;
                   end
                 end
               end
             end
           end else begin
-            if (_T_208) begin
-              if (_T_219) begin
+            if (_T_94) begin
+              if (_T_103) begin
                 state <= 2'h3;
               end else begin
-                if (_T_222) begin
+                if (_T_104) begin
                   state <= 2'h3;
                 end else begin
                   state <= 2'h0;
                 end
               end
             end else begin
-              if (_T_225) begin
-                if (_T_226) begin
+              if (_T_105) begin
+                if (_T_106) begin
                   if (!(writestate_isSingle)) begin
-                    if (!(_T_232)) begin
-                      if (_T_234) begin
+                    if (!(_T_108)) begin
+                      if (_T_109) begin
                         state <= 2'h0;
                       end
                     end
                   end
                 end else begin
-                  if (!(_T_235)) begin
-                    if (_T_241) begin
-                      if (_T_243) begin
+                  if (!(_T_110)) begin
+                    if (_T_114) begin
+                      if (_T_115) begin
                         if (writestate_isSingle) begin
                           state <= 2'h0;
                         end else begin
@@ -893,31 +473,31 @@ module SpiSlaveReceiver( // @[:@3.2]
     if (reset) begin
       writestate <= 2'h0;
     end else begin
-      if (_T_135) begin
-        if (!(_T_136)) begin
-          if (!(_T_164)) begin
-            if (_T_208) begin
+      if (_T_42) begin
+        if (!(_T_43)) begin
+          if (!(_T_55)) begin
+            if (_T_94) begin
               writestate <= 2'h0;
             end else begin
-              if (_T_225) begin
-                if (_T_226) begin
+              if (_T_105) begin
+                if (_T_106) begin
                   if (writestate_isSingle) begin
-                    if (_T_228) begin
+                    if (_T_107) begin
                       writestate <= 2'h1;
                     end
                   end else begin
-                    if (_T_232) begin
+                    if (_T_108) begin
                       writestate <= 2'h1;
                     end
                   end
                 end else begin
-                  if (_T_235) begin
-                    if (_T_236) begin
+                  if (_T_110) begin
+                    if (_T_111) begin
                       writestate <= 2'h2;
                     end
                   end else begin
-                    if (_T_241) begin
-                      if (_T_243) begin
+                    if (_T_114) begin
+                      if (_T_115) begin
                         writestate <= 2'h0;
                       end
                     end
@@ -932,68 +512,68 @@ module SpiSlaveReceiver( // @[:@3.2]
     if (reset) begin
       readSuccess <= 1'h0;
     end else begin
-      if (_T_135) begin
-        if (_T_136) begin
+      if (_T_42) begin
+        if (_T_43) begin
           readSuccess <= 1'h0;
         end else begin
-          if (!(_T_164)) begin
-            if (_T_208) begin
-              readSuccess <= _T_147;
+          if (!(_T_55)) begin
+            if (_T_94) begin
+              readSuccess <= _T_49;
             end
           end
         end
       end
     end
-    if (_T_135) begin
-      if (_T_136) begin
-        if (_T_144) begin
-          commandVec_0 <= _T_147;
+    if (_T_42) begin
+      if (_T_43) begin
+        if (_T_48) begin
+          commandVec_0 <= _T_49;
         end
       end
     end
-    if (_T_135) begin
-      if (_T_136) begin
-        if (_T_144) begin
-          commandVec_1 <= _T_150;
+    if (_T_42) begin
+      if (_T_43) begin
+        if (_T_48) begin
+          commandVec_1 <= _T_50;
         end
       end
     end
-    if (_T_135) begin
-      if (_T_136) begin
-        if (_T_144) begin
-          commandVec_2 <= _T_153;
+    if (_T_42) begin
+      if (_T_43) begin
+        if (_T_48) begin
+          commandVec_2 <= _T_51;
         end
       end
     end
-    if (_T_135) begin
-      if (_T_136) begin
-        if (_T_144) begin
-          commandVec_3 <= _T_156;
+    if (_T_42) begin
+      if (_T_43) begin
+        if (_T_48) begin
+          commandVec_3 <= _T_52;
         end
       end
     end
-    if (_T_135) begin
-      if (_T_136) begin
-        if (_T_144) begin
-          commandVec_4 <= _T_159;
+    if (_T_42) begin
+      if (_T_43) begin
+        if (_T_48) begin
+          commandVec_4 <= _T_53;
         end
       end
     end
-    if (_T_135) begin
-      if (_T_136) begin
-        if (_T_144) begin
-          commandVec_5 <= _T_162;
+    if (_T_42) begin
+      if (_T_43) begin
+        if (_T_48) begin
+          commandVec_5 <= _T_54;
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (!(_T_166)) begin
-            if (!(_T_176)) begin
-              if (!(_T_186)) begin
-                if (_T_196) begin
-                  commandArgumentVec_0 <= _T_147;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (!(_T_56)) begin
+            if (!(_T_65)) begin
+              if (!(_T_74)) begin
+                if (_T_83) begin
+                  commandArgumentVec_0 <= _T_49;
                 end
               end
             end
@@ -1001,14 +581,14 @@ module SpiSlaveReceiver( // @[:@3.2]
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (!(_T_166)) begin
-            if (!(_T_176)) begin
-              if (!(_T_186)) begin
-                if (_T_196) begin
-                  commandArgumentVec_1 <= _T_150;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (!(_T_56)) begin
+            if (!(_T_65)) begin
+              if (!(_T_74)) begin
+                if (_T_83) begin
+                  commandArgumentVec_1 <= _T_50;
                 end
               end
             end
@@ -1016,14 +596,14 @@ module SpiSlaveReceiver( // @[:@3.2]
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (!(_T_166)) begin
-            if (!(_T_176)) begin
-              if (!(_T_186)) begin
-                if (_T_196) begin
-                  commandArgumentVec_2 <= _T_153;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (!(_T_56)) begin
+            if (!(_T_65)) begin
+              if (!(_T_74)) begin
+                if (_T_83) begin
+                  commandArgumentVec_2 <= _T_51;
                 end
               end
             end
@@ -1031,14 +611,14 @@ module SpiSlaveReceiver( // @[:@3.2]
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (!(_T_166)) begin
-            if (!(_T_176)) begin
-              if (!(_T_186)) begin
-                if (_T_196) begin
-                  commandArgumentVec_3 <= _T_156;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (!(_T_56)) begin
+            if (!(_T_65)) begin
+              if (!(_T_74)) begin
+                if (_T_83) begin
+                  commandArgumentVec_3 <= _T_52;
                 end
               end
             end
@@ -1046,14 +626,14 @@ module SpiSlaveReceiver( // @[:@3.2]
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (!(_T_166)) begin
-            if (!(_T_176)) begin
-              if (!(_T_186)) begin
-                if (_T_196) begin
-                  commandArgumentVec_4 <= _T_159;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (!(_T_56)) begin
+            if (!(_T_65)) begin
+              if (!(_T_74)) begin
+                if (_T_83) begin
+                  commandArgumentVec_4 <= _T_53;
                 end
               end
             end
@@ -1061,14 +641,14 @@ module SpiSlaveReceiver( // @[:@3.2]
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (!(_T_166)) begin
-            if (!(_T_176)) begin
-              if (!(_T_186)) begin
-                if (_T_196) begin
-                  commandArgumentVec_5 <= _T_162;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (!(_T_56)) begin
+            if (!(_T_65)) begin
+              if (!(_T_74)) begin
+                if (_T_83) begin
+                  commandArgumentVec_5 <= _T_54;
                 end
               end
             end
@@ -1076,14 +656,14 @@ module SpiSlaveReceiver( // @[:@3.2]
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (!(_T_166)) begin
-            if (!(_T_176)) begin
-              if (!(_T_186)) begin
-                if (_T_196) begin
-                  commandArgumentVec_6 <= _T_141;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (!(_T_56)) begin
+            if (!(_T_65)) begin
+              if (!(_T_74)) begin
+                if (_T_83) begin
+                  commandArgumentVec_6 <= _T_46;
                 end
               end
             end
@@ -1091,14 +671,14 @@ module SpiSlaveReceiver( // @[:@3.2]
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (!(_T_166)) begin
-            if (!(_T_176)) begin
-              if (!(_T_186)) begin
-                if (_T_196) begin
-                  commandArgumentVec_7 <= _T_138;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (!(_T_56)) begin
+            if (!(_T_65)) begin
+              if (!(_T_74)) begin
+                if (_T_83) begin
+                  commandArgumentVec_7 <= _T_44;
                 end
               end
             end
@@ -1106,302 +686,302 @@ module SpiSlaveReceiver( // @[:@3.2]
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (!(_T_166)) begin
-            if (!(_T_176)) begin
-              if (_T_186) begin
-                commandArgumentVec_8 <= _T_147;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (!(_T_56)) begin
+            if (!(_T_65)) begin
+              if (_T_74) begin
+                commandArgumentVec_8 <= _T_49;
               end
             end
           end
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (!(_T_166)) begin
-            if (!(_T_176)) begin
-              if (_T_186) begin
-                commandArgumentVec_9 <= _T_150;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (!(_T_56)) begin
+            if (!(_T_65)) begin
+              if (_T_74) begin
+                commandArgumentVec_9 <= _T_50;
               end
             end
           end
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (!(_T_166)) begin
-            if (!(_T_176)) begin
-              if (_T_186) begin
-                commandArgumentVec_10 <= _T_153;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (!(_T_56)) begin
+            if (!(_T_65)) begin
+              if (_T_74) begin
+                commandArgumentVec_10 <= _T_51;
               end
             end
           end
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (!(_T_166)) begin
-            if (!(_T_176)) begin
-              if (_T_186) begin
-                commandArgumentVec_11 <= _T_156;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (!(_T_56)) begin
+            if (!(_T_65)) begin
+              if (_T_74) begin
+                commandArgumentVec_11 <= _T_52;
               end
             end
           end
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (!(_T_166)) begin
-            if (!(_T_176)) begin
-              if (_T_186) begin
-                commandArgumentVec_12 <= _T_159;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (!(_T_56)) begin
+            if (!(_T_65)) begin
+              if (_T_74) begin
+                commandArgumentVec_12 <= _T_53;
               end
             end
           end
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (!(_T_166)) begin
-            if (!(_T_176)) begin
-              if (_T_186) begin
-                commandArgumentVec_13 <= _T_162;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (!(_T_56)) begin
+            if (!(_T_65)) begin
+              if (_T_74) begin
+                commandArgumentVec_13 <= _T_54;
               end
             end
           end
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (!(_T_166)) begin
-            if (!(_T_176)) begin
-              if (_T_186) begin
-                commandArgumentVec_14 <= _T_141;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (!(_T_56)) begin
+            if (!(_T_65)) begin
+              if (_T_74) begin
+                commandArgumentVec_14 <= _T_46;
               end
             end
           end
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (!(_T_166)) begin
-            if (!(_T_176)) begin
-              if (_T_186) begin
-                commandArgumentVec_15 <= _T_138;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (!(_T_56)) begin
+            if (!(_T_65)) begin
+              if (_T_74) begin
+                commandArgumentVec_15 <= _T_44;
               end
             end
           end
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (!(_T_166)) begin
-            if (_T_176) begin
-              commandArgumentVec_16 <= _T_147;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (!(_T_56)) begin
+            if (_T_65) begin
+              commandArgumentVec_16 <= _T_49;
             end
           end
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (!(_T_166)) begin
-            if (_T_176) begin
-              commandArgumentVec_17 <= _T_150;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (!(_T_56)) begin
+            if (_T_65) begin
+              commandArgumentVec_17 <= _T_50;
             end
           end
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (!(_T_166)) begin
-            if (_T_176) begin
-              commandArgumentVec_18 <= _T_153;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (!(_T_56)) begin
+            if (_T_65) begin
+              commandArgumentVec_18 <= _T_51;
             end
           end
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (!(_T_166)) begin
-            if (_T_176) begin
-              commandArgumentVec_19 <= _T_156;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (!(_T_56)) begin
+            if (_T_65) begin
+              commandArgumentVec_19 <= _T_52;
             end
           end
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (!(_T_166)) begin
-            if (_T_176) begin
-              commandArgumentVec_20 <= _T_159;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (!(_T_56)) begin
+            if (_T_65) begin
+              commandArgumentVec_20 <= _T_53;
             end
           end
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (!(_T_166)) begin
-            if (_T_176) begin
-              commandArgumentVec_21 <= _T_162;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (!(_T_56)) begin
+            if (_T_65) begin
+              commandArgumentVec_21 <= _T_54;
             end
           end
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (!(_T_166)) begin
-            if (_T_176) begin
-              commandArgumentVec_22 <= _T_141;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (!(_T_56)) begin
+            if (_T_65) begin
+              commandArgumentVec_22 <= _T_46;
             end
           end
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (!(_T_166)) begin
-            if (_T_176) begin
-              commandArgumentVec_23 <= _T_138;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (!(_T_56)) begin
+            if (_T_65) begin
+              commandArgumentVec_23 <= _T_44;
             end
           end
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (_T_166) begin
-            commandArgumentVec_24 <= _T_147;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (_T_56) begin
+            commandArgumentVec_24 <= _T_49;
           end
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (_T_166) begin
-            commandArgumentVec_25 <= _T_150;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (_T_56) begin
+            commandArgumentVec_25 <= _T_50;
           end
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (_T_166) begin
-            commandArgumentVec_26 <= _T_153;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (_T_56) begin
+            commandArgumentVec_26 <= _T_51;
           end
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (_T_166) begin
-            commandArgumentVec_27 <= _T_156;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (_T_56) begin
+            commandArgumentVec_27 <= _T_52;
           end
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (_T_166) begin
-            commandArgumentVec_28 <= _T_159;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (_T_56) begin
+            commandArgumentVec_28 <= _T_53;
           end
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (_T_166) begin
-            commandArgumentVec_29 <= _T_162;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (_T_56) begin
+            commandArgumentVec_29 <= _T_54;
           end
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (_T_166) begin
-            commandArgumentVec_30 <= _T_141;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (_T_56) begin
+            commandArgumentVec_30 <= _T_46;
           end
         end
       end
     end
-    if (_T_135) begin
-      if (!(_T_136)) begin
-        if (_T_164) begin
-          if (_T_166) begin
-            commandArgumentVec_31 <= _T_138;
+    if (_T_42) begin
+      if (!(_T_43)) begin
+        if (_T_55) begin
+          if (_T_56) begin
+            commandArgumentVec_31 <= _T_44;
           end
         end
       end
     end
-    if (_T_135) begin
-      if (_T_136) begin
-        if (_T_144) begin
+    if (_T_42) begin
+      if (_T_43) begin
+        if (_T_48) begin
           counter <= 32'h0;
         end
       end else begin
-        if (_T_164) begin
-          counter <= _T_207;
+        if (_T_55) begin
+          counter <= _T_93;
         end else begin
-          if (!(_T_208)) begin
-            if (_T_225) begin
-              if (_T_226) begin
+          if (!(_T_94)) begin
+            if (_T_105) begin
+              if (_T_106) begin
                 if (writestate_isSingle) begin
-                  if (_T_228) begin
+                  if (_T_107) begin
                     counter <= 32'h1;
                   end
                 end else begin
                   counter <= 32'h1;
                 end
               end else begin
-                if (_T_235) begin
-                  if (_T_236) begin
+                if (_T_110) begin
+                  if (_T_111) begin
                     counter <= 32'h1;
                   end else begin
-                    counter <= _T_207;
+                    counter <= _T_93;
                   end
                 end else begin
-                  if (_T_241) begin
-                    if (_T_243) begin
+                  if (_T_114) begin
+                    if (_T_115) begin
                       counter <= 32'h0;
                     end else begin
-                      counter <= _T_207;
+                      counter <= _T_93;
                     end
                   end
                 end
@@ -1411,7 +991,7 @@ module SpiSlaveReceiver( // @[:@3.2]
         end
       end
     end
-    _T_129 <= io_BufferChanged;
-    _T_132 <= _T_129;
+    _T_38 <= io_BufferChanged;
+    _T_40 <= _T_38;
   end
 endmodule

@@ -31,11 +31,11 @@ def javacOptionsVersion(scalaVersion: String): Seq[String] = {
 
 name := "SPI SD For FPGA"
 
-version := "3.1.1"
+version := "0.0.1"
 
 scalaVersion := "2.12.7"
 
-crossScalaVersions := Seq("2.11.12", "2.12.7")
+crossScalaVersions := Seq("2.11.12", "2.12.10")
 
 resolvers ++= Seq(
   Resolver.sonatypeRepo("snapshots"),
@@ -44,12 +44,11 @@ resolvers ++= Seq(
 
 // Provide a managed dependency on X if -DXVersion="" is supplied on the command line.
 val defaultVersions = Map(
-  "chisel3" -> "3.1.+",
-  "chisel-iotesters" -> "[1.2.5,1.3-SNAPSHOT[",
-  "treadle" -> "1.1-SNAPSHOT"
+  "chisel3" -> "3.2.+",
+  "chisel-iotesters" -> "1.3.+",
   )
 
-libraryDependencies ++= Seq("chisel3","chisel-iotesters", "treadle").map {
+libraryDependencies ++= Seq("chisel3","chisel-iotesters").map {
   dep: String => "edu.berkeley.cs" %% dep % sys.props.getOrElse(dep + "Version", defaultVersions(dep)) }
 
 scalacOptions ++= scalacOptionsVersion(scalaVersion.value)
