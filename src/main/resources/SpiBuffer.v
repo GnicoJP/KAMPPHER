@@ -10,6 +10,7 @@ module SpiBuffer(
    reg [7:0] outer_buffer;
    reg changed;
    reg state;
+   reg [6:0] state_0_count;
 
    wire [7:0] next_buffer;
 
@@ -25,6 +26,7 @@ module SpiBuffer(
            outer_buffer <= 8'b11111111;
            changed <= 0;
            state <= 0;
+           state_0_count <= 0;
        end else begin
             inner_buffer <= next_buffer;
             if(state) begin
@@ -37,8 +39,12 @@ module SpiBuffer(
                 end
                 counter <= counter + 1;
             end else begin
-                if (~DI) begin
-                    state <= 1;
+                if (state_0_count >= 74) begin
+                    if(~DI) begin
+                        state <= 0;
+                    end
+                else
+                    state_0_count <= DI ? state_0_count + 1 : 0;
                 end
             end
        end
