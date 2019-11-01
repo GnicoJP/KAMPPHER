@@ -33,7 +33,7 @@ name := "SPI SD For FPGA"
 
 version := "0.0.1"
 
-scalaVersion := "2.12.7"
+scalaVersion := "2.12.10"
 
 crossScalaVersions := Seq("2.11.12", "2.12.10")
 
