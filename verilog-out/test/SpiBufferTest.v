@@ -12,18 +12,13 @@ module SpiBufferTest();
 
     integer i;
 
-    SpiBuffer sb(.RST(RST), .DI(DI), .CS(CS), .CLK(CLK), .Buffer(outDat), .Changed(outSucc));
+    SpiBuffer sb(.reset(RST), .DI(DI), .CS(CS), .CLK(CLK), .Buffer(outDat), .Changed(outSucc), .IsInitialized(1));
 
     task bufferInit;
         begin
             RST = 0;
             #1 RST = 1;
             #1 RST = 0;
-            CS = 1;
-            DI = 1;
-            for(i = 0; i < 74; i = i + 1) begin
-                doClock();
-            end
         end
     endtask
 

@@ -17,7 +17,7 @@ module SpiBufferAvalonDebuggerTest();
     reg dbg_clk;
     reg rst;
 
-    SpiBuffer sb(.RST(rst), .DI(DI), .CS(CS), .CLK(CLK), .Buffer(outDat), .Changed(outSucc));
+    SpiBuffer sb(.reset(rst), .DI(DI), .CS(CS), .CLK(CLK), .Buffer(outDat), .Changed(outSucc), .IsInitialized(1));
     SpiBufferAvalonDebugger dbg(.clock(dbg_clk), .reset(rst), .io_InputBuffer(outDat), .io_BufferChanged(outSucc), .io_Avalon_address(address), .io_Avalon_read(avalon_read), .io_Avalon_readdata(result));
 
     task Init;
@@ -28,11 +28,6 @@ module SpiBufferAvalonDebuggerTest();
             address = 0;
             #1 dbg_clk = 1;
             #1 rst = 0;
-            CS = 1;
-            DI = 1;
-            for(i = 0; i < 74; i = i + 1) begin
-                doClock();
-            end
         end
     endtask
 

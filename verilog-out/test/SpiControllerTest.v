@@ -56,7 +56,7 @@ module SpiControllerTest();
     assign L = 2048;
 
     SpiController spiCont(.clock(__clk), .reset(rest), .io_SlaveCommandReadFinished(CommandReadFinished), .io_SlaveArgumentReadFinished(ArgumentReadFinished), .io_SlaveReadSuccess(ReadSuccess), .io_SlaveCommand(Command), .io_SlaveCommandArgument(CommandArgument), .io_DataBlockSize(blockSize));
-    SpiBuffer spiBuf(.RST(rest), .DI(DI), .CS(CS), .CLK(CLK), .Buffer(Buf), .Changed(changed));
+    SpiBuffer spiBuf(.reset(rest), .DI(DI), .CS(CS), .CLK(CLK), .Buffer(Buf), .Changed(changed), .IsInitialized(1));
     SpiSlaveReceiver tester(.clock(__clk), .reset(rest), .io_InputBuffer(Buf), .io_BufferChanged(changed), .io_DataBlockSize(blockSize), .io_CommandReadFinished(CommandReadFinished), .io_ArgumentReadFinished(ArgumentReadFinished), .io_ReadSuccess(ReadSuccess), .io_Command(Command), .io_CommandArgument(CommandArgument), .io____state(__state));
     initial begin
         CS = 1'b1;

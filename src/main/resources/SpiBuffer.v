@@ -1,18 +1,17 @@
 module SpiBuffer(
-      input DI,
-      input CLK,
-      input CS,
-      output [7:0] Buffer,
-      output Changed,
-      input reset
+    input DI,
+    input CLK,
+    input CS,
+    input reset,
+    input IsInitialized,
+    output [7:0] Buffer,
+    output Changed
 );
     reg [2:0] counter;
     reg [7:0] inner_buffer;
     reg [7:0] outer_buffer;
     reg changed;
-    reg [1:0] state;
-
-    reg [6:0] initial_count;
+    reg state;
 
     wire [7:0] next_buffer;
 
@@ -23,19 +22,13 @@ module SpiBuffer(
     
     always @(posedge CLK or posedge reset) begin
         if(reset) begin
-            initial_count = 0;
             state <= 0;
             changed <= 0;
-        end else if(state == 0 || state == 1) begin
-            initial_count = (DI && CS) ? (initial_count + 1) : 0;
-            if(initial_count == 74) begin
-                state <= 2;
-            end
-        end else begin
+        end else if(IsInitialized) begin
             if (CS) begin
-                state <= 2;
+                state <= 0;
             end else begin
-                if(state == 3) begin
+                if(state) begin
                     if (counter == 3'b111) begin
                         changed <= 1;
                     end else if (counter == 3'b100) begin
@@ -43,7 +36,7 @@ module SpiBuffer(
                     end
                 end else begin
                     if (~DI) begin
-                        state <= 3;
+                        state <= 1;
                     end
                 end
             end
@@ -51,14 +44,14 @@ module SpiBuffer(
     end 
 
     always @(posedge CLK) begin
-        if (reset == 0 && (state == 2 || state == 3)) begin
+        if (reset == 0 && IsInitialized) begin
             if (CS) begin
                 counter <= 1;
                 inner_buffer <= 8'b11111111;
                 outer_buffer = 8'b11111111;
             end else begin
                 inner_buffer <= next_buffer;
-                if(state == 3) begin
+                if(state) begin
                     if (counter == 3'b111) begin
                         outer_buffer = next_buffer;
                     end

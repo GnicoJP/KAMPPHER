@@ -46,18 +46,13 @@ module SpiSlaveReceiverTest();
             __clk = 1;
             #1 rest = 0;
             __clk = 0;
-            CS = 1;
-            DI = 1;
-            for(i = 0; i < 74; i = i + 1) begin
-                do_clock();
-            end
         end
     endtask
 
     assign K = 123;
     assign L = 128913;
 
-    SpiBuffer spiBuf(.RST(rest), .DI(DI), .CS(CS), .CLK(CLK), .Buffer(Buf), .Changed(changed));
+    SpiBuffer spiBuf(.reset(rest), .DI(DI), .CS(CS), .CLK(CLK), .Buffer(Buf), .Changed(changed), .IsInitialized(1));
     SpiSlaveReceiver tester(.clock(__clk), .reset(rest), .io_InputBuffer(Buf), .io_BufferChanged(changed), .io_DataBlockSize(blockSize), .io_CommandReadFinished(CommandReadFinished), .io_ArgumentReadFinished(ArgumentReadFinished), .io_ReadSuccess(ReadSuccess), .io_Command(Command), .io_CommandArgument(CommandArgument), .io____state(__state));
     initial begin
         CS = 1'b1;
