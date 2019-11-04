@@ -4,13 +4,28 @@ module SpiBufferTest();
     reg CS;
     reg CLK;
 
+    reg RST;
+
     wire [7:0] outDat;
     reg [7:0] inDat;
     wire outSucc;
 
     integer i;
 
-    SpiBuffer sb(.DI(DI), .CS(CS), .CLK(CLK), .Buffer(outDat), .Changed(outSucc));
+    SpiBuffer sb(.RST(RST), .DI(DI), .CS(CS), .CLK(CLK), .Buffer(outDat), .Changed(outSucc));
+
+    task bufferInit;
+        begin
+            RST = 0;
+            #1 RST = 1;
+            #1 RST = 0;
+            CS = 1;
+            DI = 1;
+            for(i = 0; i < 74; i = i + 1) begin
+                doClock();
+            end
+        end
+    endtask
 
     task doClock;
         begin
@@ -28,12 +43,9 @@ module SpiBufferTest();
             end
         end
     endtask
+
     initial begin
-        doClock();
-        doClock();
-        doClock();
-        doClock();
-        doClock();
+        bufferInit();
         CS = 1;
         doClock();
         doClock();

@@ -27,7 +27,7 @@ assign mem0_next =  mem0_next_inner == 7'b0 ? 8'b1 : {1'b0, mem0_next_inner};
 
 always @(posedge(clock)) begin
     if(reset) begin
-            mem[0] = 8'b1;
+        mem[0] = 8'b1;
         bufferchanged_history = 3'b111;
         waitrequest = 1'b0;
     end else begin

@@ -36,21 +36,34 @@ module SpiControllerTest();
         end
     endtask
 
+    task Init;
+        begin
+            rest = 0;
+            __clk = 0;
+            #1 rest = 1;
+            __clk = 1;
+            #1 rest = 0;
+            __clk = 0;
+            CS = 1;
+            DI = 1;
+            for(i = 0; i < 74; i = i + 1) begin
+                do_clock();
+            end
+        end
+    endtask
+
     assign K = 16;
     assign L = 2048;
 
     SpiController spiCont(.clock(__clk), .reset(rest), .io_SlaveCommandReadFinished(CommandReadFinished), .io_SlaveArgumentReadFinished(ArgumentReadFinished), .io_SlaveReadSuccess(ReadSuccess), .io_SlaveCommand(Command), .io_SlaveCommandArgument(CommandArgument), .io_DataBlockSize(blockSize));
-    SpiBuffer spiBuf(.DI(DI), .CS(CS), .CLK(CLK), .Buffer(Buf), .Changed(changed));
+    SpiBuffer spiBuf(.RST(rest), .DI(DI), .CS(CS), .CLK(CLK), .Buffer(Buf), .Changed(changed));
     SpiSlaveReceiver tester(.clock(__clk), .reset(rest), .io_InputBuffer(Buf), .io_BufferChanged(changed), .io_DataBlockSize(blockSize), .io_CommandReadFinished(CommandReadFinished), .io_ArgumentReadFinished(ArgumentReadFinished), .io_ReadSuccess(ReadSuccess), .io_Command(Command), .io_CommandArgument(CommandArgument), .io____state(__state));
     initial begin
         CS = 1'b1;
         CLK = 1'b0;
         __clk = 1'b0;
         DI = 1'b1;
-        rest = 1'b1;
-
-        do_clock();
-        rest = 1'b0;
+        Init();
         CS = 1'b0;
 
         for(i = 0; i < 8; i = i + 1) begin

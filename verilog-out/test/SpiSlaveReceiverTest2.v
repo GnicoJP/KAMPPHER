@@ -19,7 +19,7 @@ module SpiSlaveReceiverTest2();
     reg [31:0] L;
 
     assign blockSize = 2048;
-
+    
     task do_clock;
         begin
             #1 __clk = 1'b1;
@@ -28,6 +28,21 @@ module SpiSlaveReceiverTest2();
             #1 __clk = 1'b1;
             CLK = 1'b0;
             #1 __clk = 1'b0;
+        end
+    endtask
+
+    task Init;
+        begin
+            __clk = 0;
+            #1 rest = 1;
+            __clk = 1;
+            #1 rest = 0;
+            __clk = 0;
+            CS = 1;
+            DI = 1;
+            for(i = 0; i < 74; i = i + 1) begin
+                do_clock();
+            end
         end
     endtask
 
@@ -58,7 +73,7 @@ module SpiSlaveReceiverTest2();
         end
     endtask
     
-    SpiBuffer spiBuf(.DI(DI), .CS(CS), .CLK(CLK), .Buffer(Buf), .Changed(changed));
+    SpiBuffer spiBuf(.reset(rest), .DI(DI), .CS(CS), .CLK(CLK), .Buffer(Buf), .Changed(changed));
     SpiSlaveReceiver tester(.clock(__clk), .reset(rest), .io_InputBuffer(Buf), .io_BufferChanged(changed), .io_DataBlockSize(blockSize), .io_CommandReadFinished(CommandReadFinished), .io_ArgumentReadFinished(ArgumentReadFinished), .io_ReadSuccess(ReadSuccess), .io_Command(Command), .io_CommandArgument(CommandArgument), .io____state(__state));
     SpiSlaveReceiverLedDebugger tester2(.clock(__clk), .reset(rest), .io_CommandReadFinished(CommandReadFinished), .io_ArgumentReadFinished(ArgumentReadFinished), .io_ReadSuccess(ReadSuccess), .io_Command(Command), .io_CommandArgument(CommandArgument), .io_CMD0(debug_CMD0), .io_CMD8(debug_CMD8), .io_ACMD41(debug_ACMD41), .io_CMD16(debug_CMD16), .io_CMD55(debug_CMD55));
     initial begin
@@ -68,9 +83,9 @@ module SpiSlaveReceiverTest2();
         DI = 1'b1;
         K = 50;
         L = 1218;
-        rest = 1'b1;
 
-        do_clock();
+        Init();
+
         CS = 1'b0;
         rest = 1'b0;
         
