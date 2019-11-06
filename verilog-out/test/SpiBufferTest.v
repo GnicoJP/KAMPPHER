@@ -58,5 +58,6 @@ module SpiBufferTest();
         inDat = 64;
         doWrite();
         doClock();
+        $stop;
     end
 endmodule
