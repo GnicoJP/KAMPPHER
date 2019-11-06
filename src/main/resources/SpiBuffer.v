@@ -48,7 +48,6 @@ module SpiBuffer(
             if (CS) begin
                 counter <= 1;
                 inner_buffer <= 8'b11111111;
-                outer_buffer = 8'b11111111;
             end else begin
                 inner_buffer <= next_buffer;
                 if(state) begin
@@ -61,7 +60,6 @@ module SpiBuffer(
         end else begin
             counter <= 1;
             inner_buffer <= 8'b11111111;
-            outer_buffer = 8'b11111111;
         end
     end
 endmodule
