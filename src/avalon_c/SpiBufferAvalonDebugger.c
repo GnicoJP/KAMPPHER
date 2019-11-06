@@ -12,6 +12,8 @@
 
 #define MY_IP_BASE ( /* Base Address */ )
 
+#define COUNT 128
+
 volatile sig_atomic_t isContinue = 0;
 
 void signal_handle(int sig) {
@@ -63,7 +65,7 @@ int main() {
         got_version = *core_addr;
         if(version != got_version) {
             if(version > got_version) {
-                for(int i = version; i < 128; ++i)
+                for(int i = version; i < COUNT; ++i)
                     output(*(core_addr + i), &counter);
                 version = 1;
             }

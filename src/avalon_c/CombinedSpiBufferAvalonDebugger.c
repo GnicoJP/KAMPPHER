@@ -20,30 +20,23 @@ void signal_handle(int sig) {
   isContinue = 1;
 }
 
-void binout32(uint32_t v) {
-  uint32_t mask = 1 << 31;
+void binout8(uint32_t v) {
+  uint32_t mask = 1 << 7;
   do
       putchar(v & mask? '1' : '0');
   while (mask >>= 1);
 }
 
 void output(uint64_t value, uint64_t * counter) {
-    unsigned int CMD = value >> 32;
-    unsigned int args = value & 0xffffffff;
-    printf("CMD%u|", CMD);
-    switch(CMD) {
-        case 17: case 18: case 24: case 25:
-            printf("BLOCK ADDRESS:%x\n", args);
-            break;
-        case 16:
-            printf("BLOCK SIZE:%x\n", args);
-            break;
-        default:
-            binout32(value);
-            printf("\n");
-            break;
+    unsigned int data;
+    unsigned int dir = value & 0xff;
+    for(int i = 1; i < 8; ++i) {
+        data = (value >> (8*i)) & 0xff;
+        printf(dir ? "MOSI|%llu|" : "MISO|%llu|", *counter);
+        binout8(data);
+        printf("\n");
+        (*counter)++;
     }
-    (*counter)++;
 }
 
 int main() {
