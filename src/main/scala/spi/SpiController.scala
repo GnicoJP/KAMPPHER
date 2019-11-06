@@ -16,7 +16,7 @@ class SpiController extends Module {
         val SlaveReadSuccess = Input(Bool())
         val DataBlockSize = Output(UInt(32.W))
     })
-    val dataBlockSize = RegInit(0.U(32.W))
+    val dataBlockSize = RegInit(512.U(32.W))
 
     io.DataBlockSize := dataBlockSize
 
