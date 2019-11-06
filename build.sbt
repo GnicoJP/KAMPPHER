@@ -29,7 +29,7 @@ def javacOptionsVersion(scalaVersion: String): Seq[String] = {
   }
 }
 
-name := "SPI SD For FPGA"
+name := "KAMPPHER"
 
 version := "0.0.1"
 
