@@ -1,8 +1,9 @@
 // See README.md for license details.
-lazy val compileSpiSlave = inputKey[Unit]("Compile Slave")
-lazy val compileSpiController = inputKey[Unit]("Compile Controller")
-lazy val compileSpiBuffer = inputKey[Unit]("Compile Buffer")
-lazy val compileSpiMaster = inputKey[Unit]("Compile Master")
+lazy val compileSpiSlave = inputKey[Unit]("Compile SPI Slave")
+lazy val compileSpiController = inputKey[Unit]("Compile SPI Controller")
+lazy val compileSpiBuffer = inputKey[Unit]("Compile SPI Buffer")
+lazy val compileSpiMaster = inputKey[Unit]("Compile SPI Master")
+lazy val compileController = inputKey[Unit]("Compile Controller")
 
 def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
   Seq() ++ {
@@ -61,13 +62,17 @@ compileSpiSlave := {
 }
 
 compileSpiController := {
-  (run in Compile).toTask(" Controller --target-dir ./verilog-out").value
+  (run in Compile).toTask(" SpiController --target-dir ./verilog-out").value
 }
 
 compileSpiBuffer := {
-  (run in Compile).toTask(" Buffer --target-dir ./verilog-out").value
+  (run in Compile).toTask(" SpiBuffer --target-dir ./verilog-out").value
 }
 
 compileSpiMaster := {
-  (run in Compile).toTask(" Master --target-dir ./verilog-out").value
+  (run in Compile).toTask(" SpiMaster --target-dir ./verilog-out").value
+}
+
+compileController := {
+  (run in Compile).toTask(" Controller --target-dir ./verilog-out").value
 }
