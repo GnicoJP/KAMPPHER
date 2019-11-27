@@ -1,4 +1,4 @@
-package mbr
+package kamppher.mbr
 
 import chisel3._
 import chisel3.util._
@@ -13,19 +13,24 @@ class MBRProcessor extends Module {
         val Buffer = Input(UInt(8.W))
         val MasterCommandArgument = Input(UInt(32.W))
         val DataBlocksCount = Input(UInt(32.W))
+        val Partition1Start = Output(UInt(32.W))
+        val Partition2Start = Output(UInt(32.W))
+        val Partition3Start = Output(UInt(32.W))
+        val Partition4Start = Output(UInt(32.W))
     })
 
     val prevDataBlocksCount = RegNext(io.DataBlocksCount)
     val currentLogicalBlock = Wire(UInt(32.W))
     val late = RegInit(0.U(2.W))
 
-    val PartitionStart = RegInit(VecInit(Seq.fill(4)(0.U(32.W))))
-    val Partition0Start = PartitionStart(0).asTypeOf(Vec(4, UInt(8.W)))
-    val Partition1Start = PartitionStart(1).asTypeOf(Vec(4, UInt(8.W)))
-    val Partition2Start = PartitionStart(2).asTypeOf(Vec(4, UInt(8.W)))
-    val Partition3Start = PartitionStart(3).asTypeOf(Vec(4, UInt(8.W)))
+    val PartitionStart = RegInit(VecInit(Seq.fill(4)(VecInit(Seq.fill(4)(0.U(8.W))))))
     // it might need more clock?
     currentLogicalBlock := io.MasterCommandArgument + io.DataBlocksCount
+
+    io.Partition1Start := PartitionStart(0).asUInt
+    io.Partition2Start := PartitionStart(1).asUInt
+    io.Partition3Start := PartitionStart(2).asUInt
+    io.Partition4Start := PartitionStart(3).asUInt
 
     when(io.IsReading){
         when (risingedge(io.IsReading) || (prevDataBlocksCount =/= io.DataBlocksCount)) {
@@ -37,55 +42,55 @@ class MBRProcessor extends Module {
             switch(currentLogicalBlock) {
                 // Partition 0
                 is(0x1C3.U) {
-                    Partition0Start(0) := io.Buffer
+                    PartitionStart(0)(0) := io.Buffer
                 }
                 is(0x1C4.U) {
-                    Partition0Start(1) := io.Buffer
+                    PartitionStart(0)(1) := io.Buffer
                 }
                 is(0x1C5.U) {
-                    Partition0Start(2) := io.Buffer
+                    PartitionStart(0)(2) := io.Buffer
                 }
                 is(0x1C6.U) {
-                    Partition0Start(3) := io.Buffer
+                    PartitionStart(0)(3) := io.Buffer
                 }
                 // Partition 1
                 is(0x1D3.U) {
-                    Partition1Start(0) := io.Buffer
+                    PartitionStart(1)(0) := io.Buffer
                 }
                 is(0x1D4.U) {
-                    Partition1Start(1) := io.Buffer
+                    PartitionStart(1)(1) := io.Buffer
                 }
                 is(0x1D5.U) {
-                    Partition1Start(2) := io.Buffer
+                    PartitionStart(1)(2) := io.Buffer
                 }
                 is(0x1D6.U) {
-                    Partition1Start(3) := io.Buffer
+                    PartitionStart(1)(3) := io.Buffer
                 }
                 // Partition 2
                 is(0x1E3.U) {
-                    Partition2Start(0) := io.Buffer
+                    PartitionStart(2)(0) := io.Buffer
                 }
                 is(0x1E4.U) {
-                    Partition2Start(1) := io.Buffer
+                    PartitionStart(2)(1) := io.Buffer
                 }
                 is(0x1E5.U) {
-                    Partition2Start(2) := io.Buffer
+                    PartitionStart(2)(2) := io.Buffer
                 }
                 is(0x1E6.U) {
-                    Partition2Start(3) := io.Buffer
+                    PartitionStart(2)(3) := io.Buffer
                 }
                 // Partition 3
                 is(0x1F3.U) {
-                    Partition3Start(0) := io.Buffer
+                    PartitionStart(3)(0) := io.Buffer
                 }
                 is(0x1F4.U) {
-                    Partition3Start(1) := io.Buffer
+                    PartitionStart(3)(1) := io.Buffer
                 }
                 is(0x1F5.U) {
-                    Partition3Start(2) := io.Buffer
+                    PartitionStart(3)(2) := io.Buffer
                 }
                 is(0x1F6.U) {
-                    Partition3Start(3) := io.Buffer
+                    PartitionStart(3)(3) := io.Buffer
                 }
             }
         }

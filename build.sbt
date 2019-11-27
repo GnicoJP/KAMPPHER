@@ -58,7 +58,7 @@ scalacOptions ++= scalacOptionsVersion(scalaVersion.value)
 javacOptions ++= javacOptionsVersion(scalaVersion.value)
 
 compileSpiSlave := { 
-  (run in Compile).toTask(" Slave --target-dir ./verilog-out").value
+  (run in Compile).toTask(" SpiSlave --target-dir ./verilog-out").value
 }
 
 compileSpiController := {

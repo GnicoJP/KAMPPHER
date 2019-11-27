@@ -69,7 +69,7 @@ initial begin
 end
   always @(posedge clock) begin
     if (reset) begin
-      dataBlockSize <= 32'h0;
+      dataBlockSize <= 32'h200;
     end else begin
       if (_T_4) begin
         if (_T_5) begin

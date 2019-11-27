@@ -1,4 +1,4 @@
-package avalon
+package kamppher.avalon
 
 import chisel3._
 import chisel3.util._
