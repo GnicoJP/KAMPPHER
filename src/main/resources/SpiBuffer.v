@@ -11,7 +11,6 @@ module SpiBuffer(
     reg [7:0] inner_buffer;
     reg [7:0] outer_buffer;
     reg changed;
-    reg state;
 
     wire [7:0] next_buffer;
 
@@ -25,19 +24,11 @@ module SpiBuffer(
             state <= 0;
             changed <= 0;
         end else if(IsInitialized) begin
-            if (CS) begin
-                state <= 0;
-            end else begin
-                if(state) begin
-                    if (counter == 3'b111) begin
-                        changed <= 1;
-                    end else if (counter == 3'b100) begin
-                        changed <= 0;
-                    end
-                end else begin
-                    if (~DI) begin
-                        state <= 1;
-                    end
+            if (~CS) begin
+                if (counter == 3'b111) begin
+                    changed <= 1;
+                end else if (counter == 3'b100) begin
+                    changed <= 0;
                 end
             end
         end
@@ -46,19 +37,17 @@ module SpiBuffer(
     always @(posedge CLK) begin
         if (reset == 0 && IsInitialized) begin
             if (CS) begin
-                counter <= 1;
+                counter <= 0;
                 inner_buffer <= 8'b11111111;
             end else begin
                 inner_buffer <= next_buffer;
-                if(state) begin
-                    if (counter == 3'b111) begin
-                        outer_buffer = next_buffer;
-                    end
-                    counter <= counter + 1;
+                if (counter == 3'b111) begin
+                    outer_buffer = next_buffer;
                 end
+                counter <= counter + 1;
             end
         end else begin
-            counter <= 1;
+            counter <= 0;
             inner_buffer <= 8'b11111111;
         end
     end
