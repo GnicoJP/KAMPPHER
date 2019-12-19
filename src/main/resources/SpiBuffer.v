@@ -21,7 +21,6 @@ module SpiBuffer(
     
     always @(posedge CLK or posedge reset) begin
         if(reset) begin
-            state <= 0;
             changed <= 0;
         end else if(IsInitialized) begin
             if (~CS) begin
