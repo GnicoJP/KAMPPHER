@@ -23,7 +23,7 @@ class SpiMasterReceiver extends Module {
         val ___state = Output(UInt(3.W))
         val IsBusy = Output(Bool())
     })
-    val state_busy :: state_response :: state_ocr :: state_datatoken :: state_packet :: state_crc :: Nil = Enum(6)
+    val state_busy :: state_response :: state_ocr :: state_datatoken :: state_packet_first :: state_packet :: state_crc :: Nil = Enum(7)
     val state = RegInit(state_response)
     io.___state := state
 
@@ -46,6 +46,7 @@ class SpiMasterReceiver extends Module {
                 }
             }
             is(state_response) {   // response
+                counter := 0.U
                 when(initialized && io.InputBuffer(7) === false.B) {
                     when(io.Command === 12.U) { // R1b Response
                         state := state_busy
@@ -66,7 +67,6 @@ class SpiMasterReceiver extends Module {
                     state := state_ocr
                     when(counter === 3.U) {
                         state := state_response
-                        counter := 0.U
                     }.otherwise {
                         counter := counter + 1.U
                     }
@@ -74,20 +74,26 @@ class SpiMasterReceiver extends Module {
             }
             is(state_datatoken) { // DataPacket's DataToken
                 when(io.InputBuffer === 0xfe.U) {
-                    state := state_packet
-                }.elsewhen(io.InputBuffer === 0.U) {
-                    state := state_datatoken
+                    state := state_packet_first
                 }.elsewhen((io.InputBuffer & 0xe0.U) === 0.U) { // error
                     state := state_response
                 }
             }
-            is(state_packet) { // DataPacket
+             // DataPacket
+            is(state_packet_first) {
                 when(commandChanged(io.Command)) { // e.g. CMD12(STOP TRANS)
                     state := state_response
                     dataReading := false.B
-                    counter := 0.U
                 }.otherwise {
                     dataReading := true.B
+                    state := Mux(counter + 1.U === Mux(io.Command === 9.U || io.Command === 10.U, 16.U, io.DataBlockSize), state_crc, state_packet)
+                }
+            }
+            is(state_packet) {
+                when(commandChanged(io.Command)) { // e.g. CMD12(STOP TRANS)
+                    state := state_response
+                    dataReading := false.B
+                }.otherwise {
                     when(counter + 1.U === Mux(io.Command === 9.U || io.Command === 10.U, 16.U, io.DataBlockSize)) {
                         state := state_crc
                         counter := 0.U
@@ -97,17 +103,14 @@ class SpiMasterReceiver extends Module {
                 }
             }
             is(state_crc) { // CRC
+                dataReading := false.B
                 when(commandChanged(io.Command)) { // e.g. CMD12(STOP TRANS)
                     state := state_response
-                    counter := 0.U
-                    dataReading := false.B
                 }.otherwise {
                     state := state_crc
                     when(counter === 0.U) {
                         counter := 1.U
                     }.otherwise {
-                        counter := 0.U
-                        dataReading := false.B
                         state := state_response
                     }
                 }
