@@ -19,6 +19,8 @@ class SpiSlaveReceiver extends Module {
         val ReadSuccess = Output(Bool())
         val Command = Output(UInt(6.W))
         val CommandArgument = Output(UInt(32.W))
+        val WritingAddress = Output(UInt(32.W))
+        val WaitingWriteToken = Output(Bool())
         val ___state = Output(UInt(3.W))
     })
     val state_command :: state_argument ::  state_crc :: state_write :: Nil = Enum(4)
@@ -27,6 +29,7 @@ class SpiSlaveReceiver extends Module {
     val state = RegInit(state_command)
     val writestate = RegInit(writestate_token)
     io.___state := state
+    io.WaitingWriteToken := writestate === writestate_token
 
     val crcVec = Reg(Vec(7, Bool()))
     val readSuccess = RegInit(false.B)
@@ -34,12 +37,17 @@ class SpiSlaveReceiver extends Module {
     val commandVec = Reg(Vec(6, Bool()))
     val commandArgumentVec = Reg(Vec(32, Bool()))
     val commandVecAsUInt = Wire(UInt(6.W))
+    val commandArgumentVecAsUInt = Wire(UInt(32.W))
     commandVecAsUInt := commandVec.asUInt
+    commandArgumentVecAsUInt := commandArgumentVec.asUInt
+
+    val writingAddress = Reg(UInt(32.W))
+    io.WritingAddress := writingAddress
 
     val counter = Reg(UInt(32.W))
 
     io.Command := commandVecAsUInt
-    io.CommandArgument := commandArgumentVec.asUInt
+    io.CommandArgument := commandArgumentVecAsUInt
 
     io.CommandReadFinished := state > state_command
     io.ArgumentReadFinished := state > state_argument
@@ -80,40 +88,38 @@ class SpiSlaveReceiver extends Module {
             }
             is(state_crc) {   // CRC
                 readSuccess := io.InputBuffer(0) === true.B
-                for(i <- 0 until 6)
-                    crcVec(i) := io.InputBuffer(i + 1)
-                when(commandVecAsUInt === 24.U) {
-                    state := state_write
-                    writestate_isSingle := true.B
-                }.elsewhen(commandVecAsUInt === 25.U) {
-                    state := state_write
-                    writestate_isSingle := false.B
+                when(io.InputBuffer(0) === true.B) {
+                    for(i <- 0 until 6)
+                        crcVec(i) := io.InputBuffer(i + 1)
+                    when(commandVecAsUInt === 24.U) {
+                        state := state_write
+                        writingAddress := commandArgumentVecAsUInt
+                        writestate_isSingle := true.B
+                    }.elsewhen(commandVecAsUInt === 25.U) {
+                        state := state_write
+                        writingAddress := commandArgumentVecAsUInt
+                        writestate_isSingle := false.B
+                    }.otherwise {
+                        state := state_command
+                        writestate_isSingle := true.B
+                    }
+                    writestate := writestate_token
                 }.otherwise {
                     state := state_command
-                    writestate_isSingle := true.B
                 }
-                writestate := writestate_token
             }
             is(state_write) { // Single/Multiple Block Write
                 switch(writestate) {
                     is(writestate_token) {
-                        when(writestate_isSingle) {
-                            when(io.InputBuffer === 0xfe.U) {
-                                counter := 1.U
-                                writestate := writestate_data
-                            }
-                        }.otherwise {
-                            counter := 1.U
-                            when(io.InputBuffer === 0xfc.U) {
-                                writestate := writestate_data
-                            }.elsewhen(io.InputBuffer === 0xfd.U) {
-                                state := state_command
-                            }
+                        counter := 1.U
+                        when(io.InputBuffer === Mux(writestate_isSingle, 0xfe.U, 0xfc.U)) {
+                            writestate := writestate_data
+                        }.elsewhen(io.InputBuffer === 0xfd.U) {
+                            state := state_command
                         }
                     }
                     is(writestate_data) {
-                        when(counter === io.DataBlockSize)
-                        {
+                        when(counter === io.DataBlockSize) {
                             counter := 1.U
                             writestate := writestate_crc
                         }.otherwise {
@@ -125,6 +131,7 @@ class SpiSlaveReceiver extends Module {
                             counter := 0.U
                             writestate := writestate_token
                             state := Mux(writestate_isSingle, state_command, state_write)
+                            writingAddress := writingAddress + io.DataBlockSize
                         }.otherwise {
                             counter := counter + 1.U
                         }
