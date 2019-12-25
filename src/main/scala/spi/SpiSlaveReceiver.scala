@@ -25,7 +25,7 @@ class SpiSlaveReceiver extends Module {
     })
     val state_command :: state_argument ::  state_crc :: state_write :: Nil = Enum(4)
     val writestate_token :: writestate_data :: writestate_crc :: Nil = Enum(3)
-    val writestate_isSingle = Reg(Bool())
+    val writestate_isMultiple = Reg(Bool())
     val state = RegInit(state_command)
     val writestate = RegInit(writestate_token)
     io.___state := state
@@ -94,14 +94,14 @@ class SpiSlaveReceiver extends Module {
                     when(commandVecAsUInt === 24.U) {
                         state := state_write
                         writingAddress := commandArgumentVecAsUInt
-                        writestate_isSingle := true.B
+                        writestate_isMultiple := false.B
                     }.elsewhen(commandVecAsUInt === 25.U) {
                         state := state_write
                         writingAddress := commandArgumentVecAsUInt
-                        writestate_isSingle := false.B
+                        writestate_isMultiple := true.B
                     }.otherwise {
                         state := state_command
-                        writestate_isSingle := true.B
+                        writestate_isMultiple := false.B
                     }
                     writestate := writestate_token
                 }.otherwise {
@@ -112,10 +112,18 @@ class SpiSlaveReceiver extends Module {
                 switch(writestate) {
                     is(writestate_token) {
                         counter := 1.U
-                        when(io.InputBuffer === Mux(writestate_isSingle, 0xfe.U, 0xfc.U)) {
-                            writestate := writestate_data
-                        }.elsewhen(io.InputBuffer === 0xfd.U) {
+                        when(io.InputBuffer === 0xfd.U) {
                             state := state_command
+                        }.otherwise {
+                            when(writestate_isMultiple) {
+                                when(io.InputBuffer === 0xfc.U) {
+                                    writestate := writestate_data
+                                }
+                            }.otherwise {
+                                when(io.InputBuffer === 0xfe.U) {
+                                    writestate := writestate_data
+                                }
+                            }
                         }
                     }
                     is(writestate_data) {
@@ -130,7 +138,7 @@ class SpiSlaveReceiver extends Module {
                         when(counter === 2.U) {
                             counter := 0.U
                             writestate := writestate_token
-                            state := Mux(writestate_isSingle, state_command, state_write)
+                            state := Mux(writestate_isMultiple, state_write, state_command)
                             writingAddress := writingAddress + io.DataBlockSize
                         }.otherwise {
                             counter := counter + 1.U

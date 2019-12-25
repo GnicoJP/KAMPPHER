@@ -13,7 +13,7 @@ module SpiSlaveReceiver(
   output        io_WaitingWriteToken,
   output [2:0]  io____state
 );
-  reg  writestate_isSingle; // @[SpiSlaveReceiver.scala 28:34]
+  reg  writestate_isMultiple; // @[SpiSlaveReceiver.scala 28:36]
   reg [31:0] _RAND_0;
   reg [1:0] state; // @[SpiSlaveReceiver.scala 29:24]
   reg [31:0] _RAND_1;
@@ -136,18 +136,16 @@ module SpiSlaveReceiver(
   wire  _T_95; // @[Conditional.scala 37:30]
   wire  _T_106; // @[SpiSlaveReceiver.scala 94:43]
   wire  _T_107; // @[SpiSlaveReceiver.scala 98:49]
-  wire  _GEN_94; // @[SpiSlaveReceiver.scala 98:59]
-  wire  _GEN_97; // @[SpiSlaveReceiver.scala 94:53]
   wire  _T_108; // @[Conditional.scala 37:30]
   wire  _T_109; // @[Conditional.scala 37:30]
-  wire [7:0] _T_110; // @[SpiSlaveReceiver.scala 115:52]
-  wire  _T_111; // @[SpiSlaveReceiver.scala 115:45]
-  wire  _T_112; // @[SpiSlaveReceiver.scala 117:51]
+  wire  _T_110; // @[SpiSlaveReceiver.scala 115:45]
+  wire  _T_111; // @[SpiSlaveReceiver.scala 119:53]
+  wire  _T_112; // @[SpiSlaveReceiver.scala 123:53]
   wire  _T_113; // @[Conditional.scala 37:30]
-  wire  _T_114; // @[SpiSlaveReceiver.scala 122:38]
+  wire  _T_114; // @[SpiSlaveReceiver.scala 130:38]
   wire  _T_117; // @[Conditional.scala 37:30]
-  wire  _T_118; // @[SpiSlaveReceiver.scala 130:38]
-  wire [31:0] _T_121; // @[SpiSlaveReceiver.scala 134:62]
+  wire  _T_118; // @[SpiSlaveReceiver.scala 138:38]
+  wire [31:0] _T_121; // @[SpiSlaveReceiver.scala 142:62]
   assign _T_2 = {commandVec_2,commandVec_1,commandVec_0}; // @[SpiSlaveReceiver.scala 41:36]
   assign _T_4 = {commandVec_5,commandVec_4,commandVec_3}; // @[SpiSlaveReceiver.scala 41:36]
   assign commandVecAsUInt = {commandVec_5,commandVec_4,commandVec_3,commandVec_2,commandVec_1,commandVec_0}; // @[SpiSlaveReceiver.scala 41:36]
@@ -179,18 +177,16 @@ module SpiSlaveReceiver(
   assign _T_95 = 2'h2 == state; // @[Conditional.scala 37:30]
   assign _T_106 = commandVecAsUInt == 6'h18; // @[SpiSlaveReceiver.scala 94:43]
   assign _T_107 = commandVecAsUInt == 6'h19; // @[SpiSlaveReceiver.scala 98:49]
-  assign _GEN_94 = _T_107 ? 1'h0 : 1'h1; // @[SpiSlaveReceiver.scala 98:59]
-  assign _GEN_97 = _T_106 | _GEN_94; // @[SpiSlaveReceiver.scala 94:53]
   assign _T_108 = 2'h3 == state; // @[Conditional.scala 37:30]
   assign _T_109 = 2'h0 == writestate; // @[Conditional.scala 37:30]
-  assign _T_110 = writestate_isSingle ? 8'hfe : 8'hfc; // @[SpiSlaveReceiver.scala 115:52]
-  assign _T_111 = io_InputBuffer == _T_110; // @[SpiSlaveReceiver.scala 115:45]
-  assign _T_112 = io_InputBuffer == 8'hfd; // @[SpiSlaveReceiver.scala 117:51]
+  assign _T_110 = io_InputBuffer == 8'hfd; // @[SpiSlaveReceiver.scala 115:45]
+  assign _T_111 = io_InputBuffer == 8'hfc; // @[SpiSlaveReceiver.scala 119:53]
+  assign _T_112 = io_InputBuffer == 8'hfe; // @[SpiSlaveReceiver.scala 123:53]
   assign _T_113 = 2'h1 == writestate; // @[Conditional.scala 37:30]
-  assign _T_114 = counter == io_DataBlockSize; // @[SpiSlaveReceiver.scala 122:38]
+  assign _T_114 = counter == io_DataBlockSize; // @[SpiSlaveReceiver.scala 130:38]
   assign _T_117 = 2'h2 == writestate; // @[Conditional.scala 37:30]
-  assign _T_118 = counter == 32'h2; // @[SpiSlaveReceiver.scala 130:38]
-  assign _T_121 = writingAddress + io_DataBlockSize; // @[SpiSlaveReceiver.scala 134:62]
+  assign _T_118 = counter == 32'h2; // @[SpiSlaveReceiver.scala 138:38]
+  assign _T_121 = writingAddress + io_DataBlockSize; // @[SpiSlaveReceiver.scala 142:62]
   assign io_CommandReadFinished = state > 2'h0; // @[SpiSlaveReceiver.scala 52:28]
   assign io_ArgumentReadFinished = state > 2'h1; // @[SpiSlaveReceiver.scala 53:29]
   assign io_ReadSuccess = readSuccess; // @[SpiSlaveReceiver.scala 54:20]
@@ -231,7 +227,7 @@ initial begin
     `endif
   `ifdef RANDOMIZE_REG_INIT
   _RAND_0 = {1{`RANDOM}};
-  writestate_isSingle = _RAND_0[0:0];
+  writestate_isMultiple = _RAND_0[0:0];
   `endif // RANDOMIZE_REG_INIT
   `ifdef RANDOMIZE_REG_INIT
   _RAND_1 = {1{`RANDOM}};
@@ -421,7 +417,11 @@ end
         if (!(_T_56)) begin
           if (_T_95) begin
             if (_T_50) begin
-              writestate_isSingle <= _GEN_97;
+              if (_T_106) begin
+                writestate_isMultiple <= 1'h0;
+              end else begin
+                writestate_isMultiple <= _T_107;
+              end
             end
           end
         end
@@ -464,19 +464,17 @@ end
             end else begin
               if (_T_108) begin
                 if (_T_109) begin
-                  if (!(_T_111)) begin
-                    if (_T_112) begin
-                      state <= 2'h0;
-                    end
+                  if (_T_110) begin
+                    state <= 2'h0;
                   end
                 end else begin
                   if (!(_T_113)) begin
                     if (_T_117) begin
                       if (_T_118) begin
-                        if (writestate_isSingle) begin
-                          state <= 2'h0;
-                        end else begin
+                        if (writestate_isMultiple) begin
                           state <= 2'h3;
+                        end else begin
+                          state <= 2'h0;
                         end
                       end
                     end
@@ -501,8 +499,16 @@ end
             end else begin
               if (_T_108) begin
                 if (_T_109) begin
-                  if (_T_111) begin
-                    writestate <= 2'h1;
+                  if (!(_T_110)) begin
+                    if (writestate_isMultiple) begin
+                      if (_T_111) begin
+                        writestate <= 2'h1;
+                      end
+                    end else begin
+                      if (_T_112) begin
+                        writestate <= 2'h1;
+                      end
+                    end
                   end
                 end else begin
                   if (_T_113) begin
