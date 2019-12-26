@@ -20,6 +20,8 @@ object KamppherRunner extends App {
                 chisel3.Driver.execute(newargs, () => new spi.SpiController())
             case Some(3) =>
                 chisel3.Driver.execute(newargs, () => new mbr.MBRProcessor())
+                chisel3.Driver.execute(newargs, () => new mbr.WritingAddressVerifier())
+                chisel3.Driver.execute(newargs, () => new mbr.AddressConverter())
             case _ =>
                 ()
         }
