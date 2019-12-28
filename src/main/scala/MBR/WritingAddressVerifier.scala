@@ -35,9 +35,9 @@ class WritingAddressVerifier extends Module {
                     (~isInPartition3 || io.PartitionWriteEnables(3)) &&
                     (~isInPartition4 || io.PartitionWriteEnables(4))
                 , true.B)
-    io.__dbgInfo(0) := (io.MasterCommand === 24.U || io.MasterCommand === 25.U) && io.MasterCommandReadSuccess && (~isInMBR || io.PartitionWriteEnables(0))
-    io.__dbgInfo(1) := (io.MasterCommand === 24.U || io.MasterCommand === 25.U) && io.MasterCommandReadSuccess && (~isInPartition1 || io.PartitionWriteEnables(1))
-    io.__dbgInfo(2) := (io.MasterCommand === 24.U || io.MasterCommand === 25.U) && io.MasterCommandReadSuccess && (~isInPartition2 || io.PartitionWriteEnables(2))
-    io.__dbgInfo(3) := (io.MasterCommand === 24.U || io.MasterCommand === 25.U) && io.MasterCommandReadSuccess && (~isInPartition3 || io.PartitionWriteEnables(3))
-    io.__dbgInfo(4) := (io.MasterCommand === 24.U || io.MasterCommand === 25.U) && io.MasterCommandReadSuccess && (~isInPartition4 || io.PartitionWriteEnables(4))
+    io.__dbgInfo(0) := (io.MasterCommand === 24.U || io.MasterCommand === 25.U) && io.MasterCommandReadSuccess && isInMBR
+    io.__dbgInfo(1) := (io.MasterCommand === 24.U || io.MasterCommand === 25.U) && io.MasterCommandReadSuccess && isInPartition1
+    io.__dbgInfo(2) := (io.MasterCommand === 24.U || io.MasterCommand === 25.U) && io.MasterCommandReadSuccess && isInPartition2
+    io.__dbgInfo(3) := (io.MasterCommand === 24.U || io.MasterCommand === 25.U) && io.MasterCommandReadSuccess && isInPartition3
+    io.__dbgInfo(4) := (io.MasterCommand === 24.U || io.MasterCommand === 25.U) && io.MasterCommandReadSuccess && isInPartition4
 }
