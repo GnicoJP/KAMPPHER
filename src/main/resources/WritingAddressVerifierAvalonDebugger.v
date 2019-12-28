@@ -1,4 +1,4 @@
-module MBRProcessorAvalonDebugger(
+module WritingAddressVerifierAvalonDebugger(
   input         clock,
   input         reset,
   input         io_Avalon_address,
