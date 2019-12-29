@@ -21,7 +21,7 @@ reg [63:0] readdata;
 always @(posedge clock, posedge reset) begin
   if(reset) begin
     prev_dbgInfo <= 0;
-    readdata <= 0
+    readdata <= 0;
     counter <= 1;
   end else if(io___dbgInfo != prev_dbgInfo) begin
     readdata <= {counter, readdata[55:8], 3'b000, io___dbgInfo};
