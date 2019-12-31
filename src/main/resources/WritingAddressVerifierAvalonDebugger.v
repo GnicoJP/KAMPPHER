@@ -30,7 +30,7 @@ always @(posedge clock, posedge reset) begin
     partitionEnables <= 0;
   end else begin
     if(io___dbgInfo != prev_dbgInfo) begin
-      readdata <= {counter, readdata[55:8], 3'b000, io___dbgInfo};
+      readdata <= {counter, readdata[47:0], 3'b000, io___dbgInfo};
       prev_dbgInfo <= io___dbgInfo;
       counter <= counter + 1;
     end

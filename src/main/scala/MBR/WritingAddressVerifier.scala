@@ -28,13 +28,7 @@ class WritingAddressVerifier extends Module {
     val isInPartition4 = Wire(Bool())
     isInPartition4 := io.MasterWritingAddress >= io.Partition4Start
 
-    io.IsOk := Mux((io.MasterCommand === 24.U || io.MasterCommand === 25.U) && io.MasterCommandReadSuccess,
-                    (~isInMBR || io.PartitionWriteEnables(0)) &&
-                    (~isInPartition1 || io.PartitionWriteEnables(1)) &&
-                    (~isInPartition2 || io.PartitionWriteEnables(2)) &&
-                    (~isInPartition3 || io.PartitionWriteEnables(3)) &&
-                    (~isInPartition4 || io.PartitionWriteEnables(4))
-                , true.B)
+    io.IsOk :=  (~isInMBR || io.PartitionWriteEnables(0)) && (~isInPartition1 || io.PartitionWriteEnables(1)) && (~isInPartition2 || io.PartitionWriteEnables(2)) && (~isInPartition3 || io.PartitionWriteEnables(3)) && (~isInPartition4 || io.PartitionWriteEnables(4))
     io.__dbgInfo(0) := (io.MasterCommand === 24.U || io.MasterCommand === 25.U) && io.MasterCommandReadSuccess && isInMBR
     io.__dbgInfo(1) := (io.MasterCommand === 24.U || io.MasterCommand === 25.U) && io.MasterCommandReadSuccess && isInPartition1
     io.__dbgInfo(2) := (io.MasterCommand === 24.U || io.MasterCommand === 25.U) && io.MasterCommandReadSuccess && isInPartition2
