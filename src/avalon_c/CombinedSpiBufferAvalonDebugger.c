@@ -32,7 +32,7 @@ void output(uint64_t value, uint64_t * counter) {
     unsigned int dir = value & 0xff;
     for(int i = 1; i < 8; ++i) {
         data = (value >> (8*i)) & 0xff;
-        printf(dir ? "MOSI|%llu|" : "MISO|%llu|", *counter);
+        printf(dir ? "MISO|%llu|" : "MOSI|%llu|", *counter);
         binout8(data);
         printf("\n");
         (*counter)++;
