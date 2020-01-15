@@ -46,8 +46,10 @@ module SpiInjector(
     assign io___dbg_state = {4'b0, state};
 
     reg [0:7] stoptrans;
+    reg [0:7] errortoken;
     initial begin
         stoptrans <= 8'b11111101;
+        errortoken <= 8'b00001111;
     end
 
     always @(negedge CLK, posedge async_reset) begin
@@ -66,6 +68,7 @@ module SpiInjector(
         end else begin
             case(state)
                 4'b0000: begin
+                    MISOsel <= 0;
                     MOSIsel <= 0;
                     if (~io_MOSIReadSuccess_hist && io_MOSIReadSuccess) begin
                         case (io_MOSICommand)
@@ -124,8 +127,23 @@ module SpiInjector(
                         state <= 4'b0000;
                     end
                 end
-                4'b0111: begin // Error injection...(TODO)
+
+                4'b0110: begin // Error Response Returning.
+                    MISOoutDat <= errortoken[counter];
+                    if(counter == 3'b111) begin
+                        state <= 4'b0000;
+                    end
+                    counter <= counter + 1;
                 end
+                4'b0111: begin // Error injection...(TODO)
+                    if (~io_MOSIWaitingWriteToken_hist && io_MOSIWaitingWriteToken) begin
+                        state <= 4'b0110;
+                        MISOsel <= 1;
+                        MISOoutDat <= errortoken[0];
+                        counter <= 1;
+                    end
+                end
+
                 4'b1000: begin // check if next block writing is valid on multi block write
                     if (~io_BufferChanged_hist && io_BufferChanged) begin
                         if(io_MISOBuffer[4] == 0 && io_MISOBuffer[0] == 1) begin
@@ -165,24 +183,15 @@ module SpiInjector(
                 4'b1011: begin // Waiting for Master's (Stop Trans|Data) Token.
                     if (~io_BufferChanged_hist && io_BufferChanged) begin
                         MOSIoutDat <= 1;
-                        if (io_MOSIBuffer == 8'b11111101) begin // Stop trans!
-                            // state <= 4'b1100;
-                            // TODO TEST
-                            MOSIsel <= 0;
-                            MISOsel <= 0;
-                            state <= 4'b0000;
+                        if (io_MOSIBuffer == 8'b11111101) begin // Stop trans!, Send Response.
+                            MISOoutDat <= 0;
+                            state <= 4'b1100;
                         end else if (io_MOSIBuffer == 8'b11111100) begin // writing even else...
                             state <= io_StopTransIfInterrupted ? 4'b1111 : 4'b0111;
                         end
                     end
                 end
-                4'b1100: begin // Send Not Busy.
-                    if (~io_BufferChanged_hist && io_BufferChanged) begin
-                        MISOoutDat <= 0;
-                        state <= 4'b1101;
-                    end
-                end
-                4'b1101: begin // Send Busy.
+                4'b1100: begin // End sending Response.
                     if (~io_BufferChanged_hist && io_BufferChanged) begin
                         MISOsel <= 0;
                         MOSIsel <= 0;
