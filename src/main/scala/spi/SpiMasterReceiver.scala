@@ -53,7 +53,7 @@ class SpiMasterReceiver extends Module {
                     }.elsewhen(io.Command === 8.U || io.Command === 58.U) { // R3/7 Response
                         state := state_ocr
                     }.elsewhen(io.Command === 17.U || io.Command === 18.U /* Read Commands(R1 Response) */ 
-                                    || io.Command === 9.U || io.Command === 10.U /* R2 Response */) {
+                                    || io.Command === 9.U || io.Command === 10.U || io.Command === 13.U /* R2 Response */) {
                         state := state_datatoken
                     }.otherwise { // Ignore R1 Responses
                         state := state_response
